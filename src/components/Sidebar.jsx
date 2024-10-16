@@ -74,11 +74,11 @@ const Sidebar = () => {
             label: "Inventario",
           },
           { key: "/consulta", icon: <SearchOutlined />, label: "Consultas" },
-          // {
-          //   key: "/configuracion",
-          //   icon: <ToolOutlined />,
-          //   label: "Configuración",
-          // },
+          {
+            key: "/configuracion",
+            icon: <ToolOutlined />,
+            label: "Configuración",
+          },
           { key: "/reportes", icon: <AreaChartOutlined />, label: "Reportes" },
           // { key: "/sistema", icon: <AreaChartOutlined />, label: "Sistema" },
         ]}

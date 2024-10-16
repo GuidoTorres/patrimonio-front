@@ -596,7 +596,7 @@ const FormularioBien = ({
               </Form.Item>
             </Flex>
           </div>
-          {/* <div
+          <div
             style={{
               flex: "1",
               border: "1px solid rgb(228, 228, 228)",
@@ -651,7 +651,7 @@ const FormularioBien = ({
                 </Dragger>
               </Form.Item>
             </Flex>
-          </div> */}
+          </div>
         </div>
         <Form.Item>
           <Flex justify="end">

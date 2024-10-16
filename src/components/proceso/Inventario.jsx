@@ -218,7 +218,7 @@ const Inventario = ({ setTitle }) => {
         <Flex gap={"5px"} style={{ width: "100%" }}>
           <Select
             placeholder="Sedes"
-            style={{ width: "20%" }}
+            style={{ width: "25%" }}
             options={sedes.map((item) => {
               return {
                 label: item.nombre,
@@ -240,7 +240,7 @@ const Inventario = ({ setTitle }) => {
           />
           <Select
             placeholder="Dependencias"
-            style={{ width: "20%" }}
+            style={{ width: "25%" }}
             options={filteredDependencias.map((item) => {
               return {
                 label: item.nombre,
@@ -262,7 +262,7 @@ const Inventario = ({ setTitle }) => {
           />
           <Select
             placeholder="Ubicaciones"
-            style={{ width: "20%" }}
+            style={{ width: "25%" }}
             options={filteredUbicaciones.map((item) => {
               return {
                 label: item.nombre,
@@ -284,7 +284,7 @@ const Inventario = ({ setTitle }) => {
           />
           <Select
             placeholder="Trabajador"
-            style={{ width: "20%" }}
+            style={{ width: "25%" }}
             options={trabajadores.map((item) => {
               return {
                 label: item.nombre,
@@ -335,7 +335,7 @@ const Inventario = ({ setTitle }) => {
         <Flex gap={"5px"} style={{ width: "100%" }}>
           <Search
             placeholder="Buscar Bien"
-            style={{ width: "20%" }}
+            style={{ width: "250px" }}
             onChange={handleInputChange}
             allowClear
             ref={searchInputRef}
