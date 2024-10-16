@@ -37,6 +37,8 @@ const Login = ({  }) => {
       setIsLogged(true);
       localStorage.setItem("token", confirm.tokenSession)
       localStorage.setItem("data", confirm.data)
+      localStorage.setItem("usuario", confirm?.data?.id)
+      console.log(confirm.data);
       // window.electron.saveToken(confirm.tokenSession);
       // window.electron.saveData(confirm.data)
       navigate("/inventario");

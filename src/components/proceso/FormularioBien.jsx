@@ -239,7 +239,8 @@ const FormularioBien = ({
     const storedDependencia = localStorage.getItem("dependencia_id");
     const storedUbicacion = localStorage.getItem("ubicacion_id");
     const storedTrabajador = localStorage.getItem("trabajador_id");
-  
+    const usuario = localStorage.getItem("usuario");
+
     // Inicializar `trabajador` solo si `storedTrabajador` existe
     let trabajador = null;
 
@@ -259,7 +260,7 @@ const FormularioBien = ({
     formData.append("estado_patrimonial", values.estado_patrimonial || null);
     formData.append("inventariado", true);
     formData.append("fecha_registro", dayjs().format("DD/MM/YYYY"));
-    formData.append("usuario_id", userId || null);
+    formData.append("usuario_id", usuario || null);
     formData.append("sbn", values.sbn || "");
     formData.append("tipo", sobrante ? "sobrante" : "activo");
     if (storedTrabajador) {

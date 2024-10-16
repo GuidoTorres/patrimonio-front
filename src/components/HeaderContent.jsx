@@ -20,6 +20,7 @@ const HeaderContent = ({ title }) => {
   const cerrarSesion = () => {
     setIsLogged(false);
     localStorage.removeItem("token");
+    localStorage.removeItem("data");localStorage.removeItem("usuario");
     navigate("/");
   };
 
