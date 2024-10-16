@@ -12,7 +12,6 @@ dist/win-unpacked/resources/app.asar
 /coverage
 
 # production
-/build
 
 # misc
 .DS_Store
