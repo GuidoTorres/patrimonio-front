@@ -5,7 +5,7 @@ import { InventarioContext } from "../context/InventarioContext";
 export const ProtectedRoute = ({ children }) => {
   const { isLogged, setIsLogged } = useContext(InventarioContext);
   const [loading, setLoading] = useState(true);
-
+  //prueba
   // useEffect(() => {
   //   // Verificar si el token está guardado en electron-store
   //   if (window.electron && window.electron.sendTokenRequest) {
