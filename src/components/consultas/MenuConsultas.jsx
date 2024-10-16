@@ -68,7 +68,7 @@ const MenuConsultas = ({ setTitle }) => {
           <strong>Inventariados</strong>
         </p>
       </section>
-      <section
+      {/* <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/consulta/sobrantes")}
       >
@@ -114,7 +114,7 @@ const MenuConsultas = ({ setTitle }) => {
           {" "}
           <strong>Faltantes</strong>
         </p>
-      </section>
+      </section> */}
     </div>
   );
 };
