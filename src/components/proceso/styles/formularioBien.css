@@ -1,0 +1,29 @@
+.form-container {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  width: 100%;
+  border: 1px solid rgb(228, 228, 228);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.form-item-codigo{
+    width: 30%;
+}
+
+.form-item{
+    width: 33%;
+}
+.form-item-large{
+    width: 50%;
+}
+.form-item-x-large{
+    width: 70%;
+}
+
+
+.form-item-input{
+    width: 100%;
+}

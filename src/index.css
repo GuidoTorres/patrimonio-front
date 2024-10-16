@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins" sans-serif;
+}
+body {
+  background-color: #EDF5F7;
+}
+
+.custom-header-table .ant-table-thead > tr > th {
+  background-color: #4DA362; /* Color de fondo */
+  color: white; /* Color de texto */
+  font-weight: bold; /* Negrita en el texto */
+}

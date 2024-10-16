@@ -1,0 +1,22 @@
+.inventario-container {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid rgb(228, 228, 228);
+}
+.inventario-search {
+  width: 250px;
+}
+
+.inventario-content {
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.inventario-image {
+  width: 40%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid rgb(228, 228, 228);
+}
