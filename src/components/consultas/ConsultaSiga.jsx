@@ -10,11 +10,14 @@ const ConsultaSiga = ({ setTitle }) => {
   const [codigoSBN, setCodigoSBN] = useState("");
   const [serie, setSerie] = useState("");
   const [bienes, setBienes] = useState([]);
+  const [trabajadores, setTrabajadores] = useState([]);
+  const [dni, setDni] = useState(null);
 
   useEffect(() => {
     setTitle("Consulta Siga");
     getSedes();
     getUbicaciones();
+    getTrabajador();
   }, []);
 
   const columns = [
@@ -161,6 +164,18 @@ const ConsultaSiga = ({ setTitle }) => {
     return <Descriptions title="Información Adicional" items={items} />;
   };
 
+  const getTrabajador = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE}/trabajadores/all`
+    );
+
+    if (response.ok) {
+      const info = await response.json();
+      setTrabajadores(info); // Guardar los bienes en el estado si la respuesta es exitosa
+    } else {
+      setTrabajadores([]);
+    }
+  };
 
   return (
     <>
@@ -218,10 +233,10 @@ const ConsultaSiga = ({ setTitle }) => {
                 value: item.tipo_ubicac + "" + item.ubicac_fisica,
               };
             })}
-            onChange={e => setSelectedUbicacion(e)}
+            onChange={(e) => setSelectedUbicacion(e)}
           />
           <Input
-            placeholder="Usuarios"
+            placeholder="Dni Trabajador"
             style={{
               width: "33%",
             }}
@@ -229,6 +244,7 @@ const ConsultaSiga = ({ setTitle }) => {
             value={usuario || undefined}
             onChange={(e) => setUsuario(e.target.value)}
           />
+
         </Flex>
         <Flex justify="start" align="center">
           <Flex

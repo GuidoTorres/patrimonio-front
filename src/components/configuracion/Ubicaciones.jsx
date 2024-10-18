@@ -9,6 +9,7 @@ const Ubicaciones = ({ setTitle }) => {
   const [ubicaciones, setUbicaciones] = useState([]);
   const [modal, setModal] = useState(false);
   const [edit, setEdit] = useState(null);
+  const [search, setSearch] = useState([]);
 
   useEffect(() => {
     setTitle("Ubicaciones");
@@ -16,11 +17,14 @@ const Ubicaciones = ({ setTitle }) => {
   }, []);
 
   const getUbicaciones = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BASE}/ubicaciones/editar`);
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE}/ubicaciones/editar`
+    );
 
     if (response.ok) {
       const info = await response.json();
       setUbicaciones(info); // Guardar los bienes en el estado si la respuesta es exitosa
+      setSearch(info)
     }
   };
 
@@ -31,19 +35,29 @@ const Ubicaciones = ({ setTitle }) => {
       align: "center",
     },
     {
-        title: "SEDE",
-        dataIndex: "nombre_sede",
-        align: "center",
-      },
+      title: "SEDE",
+      render: (_, record) => record?.sede_id + " - " + record?.nombre_sede,
+      align: "center",
+    },
     {
       title: "ÁREA",
-      dataIndex: "nombre_dependencia",
+      render: (_, record) =>
+        record?.tipo_ubicac +
+        "" +
+        record?.ubicac_fisica +
+        " - " +
+        record?.nombre_dependencia,
       align: "center",
     },
 
     {
       title: "NOMBRE",
-      dataIndex: "ubicacion",
+      render: (_, record) =>
+        record?.tipo_ubicac +
+        "" +
+        record?.ubicac_fisica +
+        " - " +
+        record?.ubicacion,
       align: "center",
     },
 
@@ -71,7 +85,7 @@ const Ubicaciones = ({ setTitle }) => {
   const handleDelete = async (value) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BASE}/usuarios/${value.id}`,
+        `${process.env.REACT_APP_BASE}/ubicaciones/${value.id}`,
         {
           method: "DELETE",
         }
@@ -79,7 +93,7 @@ const Ubicaciones = ({ setTitle }) => {
 
       if (response.ok) {
         notification.success({
-          message: "Jefe de grupo eliminado con éxito.",
+          message: "Ubicación eliminada con éxito.",
         });
         getUbicaciones(); // Actualiza la lista tras eliminar
       } else {
@@ -97,6 +111,27 @@ const Ubicaciones = ({ setTitle }) => {
     }
   };
 
+  const handleSearch = (e) => {
+    console.log(e);
+    if (e.target.value) {
+      const searchTerm = e.target.value?.toLowerCase(); // Convertir la búsqueda a minúsculas
+  
+      // Filtrar las ubicaciones
+      const filterData = ubicaciones.filter((item) => {
+        return (
+          item.nombre_sede.toLowerCase().includes(searchTerm) ||
+          item.nombre_dependencia.toLowerCase().includes(searchTerm) ||
+          item.ubicacion.toLowerCase().includes(searchTerm)
+        );
+      });
+  
+      setSearch(filterData);
+    } else {
+      // Si no hay término de búsqueda, mostrar todas las ubicaciones
+      setSearch(ubicaciones);
+    }
+  };
+  
 
   return (
     <div
@@ -110,14 +145,19 @@ const Ubicaciones = ({ setTitle }) => {
     >
       <section>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-
+          <Search
+            style={{ width: "250px" }}
+            placeholder="Ubicaciones"
+            onChange={handleSearch}
+            allowClear
+          />
           <Button onClick={() => setModal(true)}>Registrar</Button>
         </div>
       </section>
       <Table
         style={{ marginTop: "20px" }}
         columns={columns}
-        dataSource={ubicaciones}
+        dataSource={search}
         className="custom-header-table"
       />
 

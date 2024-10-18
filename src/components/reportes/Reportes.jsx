@@ -50,12 +50,13 @@ const Reportes = ({ setTitle }) => {
   const getEstadisticas = async () => {
     try {
       // Usar Promise.all para ejecutar las consultas en paralelo
-      const [responseTipo, responseUso, responseSede, responseEstado] =
+      const [responseTipo, responseUso, responseSede, responseEstado,responseContador] =
         await Promise.all([
           fetch(`${process.env.REACT_APP_BASE}/estadisticas/tipo`),
           fetch(`${process.env.REACT_APP_BASE}/estadisticas/uso`),
           fetch(`${process.env.REACT_APP_BASE}/estadisticas/sede`),
           fetch(`${process.env.REACT_APP_BASE}/estadisticas/estado`),
+          fetch(`${process.env.REACT_APP_BASE}/bienes/estadisticas`),
         ]);
 
       // Asegurarse de que todas las respuestas sean exitosas
@@ -63,17 +64,19 @@ const Reportes = ({ setTitle }) => {
         !responseTipo.ok ||
         !responseUso.ok ||
         !responseSede.ok ||
-        !responseEstado.ok
+        !responseEstado.ok ||
+        !responseContador.ok
       ) {
         throw new Error("Error fetching one or more of the statistics data");
       }
 
       // Parsear las respuestas a JSON
-      const [dataTipo, dataUso, dataSede, dataEstado] = await Promise.all([
+      const [dataTipo, dataUso, dataSede, dataEstado, contadores] = await Promise.all([
         responseTipo.json(),
         responseUso.json(),
         responseSede.json(),
         responseEstado.json(),
+        responseContador.json()
       ]);
 
       // Combinar toda la información o devolverla por separado
@@ -82,6 +85,7 @@ const Reportes = ({ setTitle }) => {
         uso: dataUso,
         sede: dataSede,
         estado: dataEstado,
+        contador: contadores
       };
 
       setEstadisticas(data);
@@ -104,7 +108,7 @@ const Reportes = ({ setTitle }) => {
               <Card bordered={false}>
                 <Statistic
                   title="Total de Bienes"
-                  value={11.28}
+                  value={estadisticas?.contador?.total}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
@@ -113,7 +117,7 @@ const Reportes = ({ setTitle }) => {
               <Card bordered={false}>
                 <Statistic
                   title="Inventariados"
-                  value={11.28}
+                  value={estadisticas?.contador?.inventariados}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
@@ -125,7 +129,7 @@ const Reportes = ({ setTitle }) => {
               <Card bordered={false}>
                 <Statistic
                   title="Sobrantes"
-                  value={11.28}
+                  value={estadisticas?.contador?.sobrantes}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
@@ -133,8 +137,8 @@ const Reportes = ({ setTitle }) => {
             <Col span={12}>
               <Card bordered={false}>
                 <Statistic
-                  title="Faltantes"
-                  value={11.28}
+                  title="Por inventariar"
+                  value={estadisticas?.contador?.faltantes}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
@@ -199,7 +203,7 @@ const Reportes = ({ setTitle }) => {
       children: (
         <Row gutter={16}>
           {bienes?.map((item) => (
-            <Col span={12} key={item?.usuario?.id}>
+            <Col span={12} key={item?.usuario?.id} style={{marginTop:"10px"}}>
               <Card bordered={false}>
                 <Statistic
                   title={`Bienes Inventariados por - ${item?.usuario?.nombre_usuario}`}

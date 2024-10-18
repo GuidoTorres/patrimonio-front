@@ -6,12 +6,16 @@ const Consultas = ({ setTitle }) => {
     getBienes();
     getSedes();
     getUbicaciones();
+    getTrabajador();
   }, []);
 
   const [bienes, setBienes] = useState([]);
   const [sedes, setSedes] = useState([]);
   const [ubicaciones, setUbicaciones] = useState([]);
   const [filters, setFilters] = useState([]);
+  const [trabajadores, setTrabajadores] = useState([]);
+  const [dni, setDni] = useState(null);
+  const [usuario, setUsuario] = useState("");
 
   const getBienes = async () => {
     const response = await fetch(
@@ -80,6 +84,11 @@ const Consultas = ({ setTitle }) => {
         ) : (
           <Tag color="volcano">Desuso</Tag>
         ),
+      align: "center",
+    },
+    {
+      title: "ACCIONES",
+      render: (_, record) => <Button>Editar</Button>,
       align: "center",
     },
   ];
@@ -162,8 +171,21 @@ const Consultas = ({ setTitle }) => {
   };
 
   const LimpiarBusqueda = async () => {
-    setFilters([])
-    getBienes()
+    setFilters([]);
+    getBienes();
+  };
+
+  const getTrabajador = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE}/trabajadores/all`
+    );
+
+    if (response.ok) {
+      const info = await response.json();
+      setTrabajadores(info); // Guardar los bienes en el estado si la respuesta es exitosa
+    } else {
+      setTrabajadores([]);
+    }
   };
 
   return (
@@ -220,14 +242,32 @@ const Consultas = ({ setTitle }) => {
             value={filters.ubicacion_id}
             onChange={(e) => handleInputChange("ubicacion_id", e)}
           />
-          <Input
-            placeholder="Usuarios"
+          {/* <Input
+            placeholder="Dni Trabajador"
             style={{
               width: "33%",
             }}
             allowClear
             value={filters.dni}
             onChange={(e) => handleInputChange("dni", e.target.value)}
+          /> */}
+          <Select
+            placeholder="Trabajador"
+            className="form-item-input"
+            onChange={(e) => handleInputChange("dni", e)}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            allowClear
+            options={trabajadores?.map((item) => {
+              return { label: item.nombre, value: item.dni };
+            })}
+            value={filters.dni}
+            style={{
+              width: "33%",
+            }}
           />
         </Flex>
         <Flex justify="start" align="center">

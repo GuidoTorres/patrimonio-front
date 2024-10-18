@@ -23,7 +23,8 @@ const FormularioBien = ({
   sobrante,
   ubicacion,
   setBuscar,
-  searchInputRef
+  searchInputRef,
+  sbnSobrante, setIsSobrante
 }) => {
   const [form] = Form.useForm();
   const [sedes, setSedes] = useState([]);
@@ -33,8 +34,8 @@ const FormularioBien = ({
   const [filteredUbicaciones, setFilteredUbicaciones] = useState([]);
   const [isRequired, setIsRequired] = useState(true); // Estado para controlar la obligatoriedad
   const [userId, setUserId] = useState(null);
-  const [marcas, setMarcas] = useState([])
-  const [colores, setColores] = useState([])
+  const [marcas, setMarcas] = useState([]);
+  const [colores, setColores] = useState([]);
   const [ubicacionValues, setUbicacionValues] = useState({});
   const [formValues, setFormValues] = useState({
     sede_id: "",
@@ -45,7 +46,7 @@ const FormularioBien = ({
   const [file, setFile] = useState(null); // Estado para el archivo
   const [imageUrl, setImageUrl] = useState(null); // Estado para la URL de la imagen cargada
   const [loading, setLoading] = useState(false); // Estado para cargando
-  const [nombreTrabajador, setNombreTrabajador] = useState(null)
+  const [nombreTrabajador, setNombreTrabajador] = useState(null);
   const props = {
     name: "file",
     multiple: false,
@@ -91,13 +92,15 @@ const FormularioBien = ({
     const storedDependencia = localStorage.getItem("dependencia_id");
     const storedUbicacion = localStorage.getItem("ubicacion_id");
     const storedTrabajador = localStorage.getItem("trabajador_id");
-  
+
     // Inicializar `trabajador` solo si `storedTrabajador` existe
     let trabajador = null;
     if (storedTrabajador) {
       trabajador = JSON.parse(storedTrabajador);
+
+      console.log(trabajador);
     }
-  
+
     if (data) {
       form.setFieldsValue({
         ...data, // Mantener todos los valores existentes de 'data'
@@ -106,26 +109,25 @@ const FormularioBien = ({
         ubicacion_id: storedUbicacion || undefined, // Usar la ubicación o el valor del localStorage
         dni: trabajador ? trabajador.dni : undefined, // Validar si trabajador existe
       });
-  
+
       // Solo llamar a `setNombreTrabajador` si el trabajador existe
       if (trabajador) {
         setNombreTrabajador(trabajador.nombre);
       }
-  
+
       // Establecer la imagen si existe
       if (data?.imagen) {
         setImageUrl(data.imagen);
       }
     }
-  }, [ubicacion]); // Asegúrate de que los valores dependan de `ubicacion`
-  
+  }, [ubicacion, sbnSobrante]); // Asegúrate de que los valores dependan de `ubicacion`
 
   useEffect(() => {
     getSedes();
     getUbicaciones();
     getDependencias();
-    getMarcas()
-    getColores()
+    getMarcas();
+    getColores();
   }, []);
 
   useEffect(() => {
@@ -165,7 +167,6 @@ const FormularioBien = ({
       setMarcas(info.data); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
-
   const getColores = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/colores`);
 
@@ -182,7 +183,6 @@ const FormularioBien = ({
       setDependencias(info); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
-
   const getUbicaciones = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/ubicaciones`);
 
@@ -191,9 +191,6 @@ const FormularioBien = ({
       setUbicaciones(info); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
-
-
-
   const getData = () => {
     if (window.electron && window.electron.sendDataRequest) {
       window.electron.sendDataRequest(); // Solicitar los datos al proceso principal
@@ -205,7 +202,6 @@ const FormularioBien = ({
       console.error("window.electron no está definido");
     }
   };
-
   useEffect(() => {
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
@@ -234,7 +230,6 @@ const FormularioBien = ({
     getData(); // Solicitar los datos al montar el componente
   }, []);
   const onFinish = async (values) => {
-
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
     const storedUbicacion = localStorage.getItem("ubicacion_id");
@@ -246,6 +241,7 @@ const FormularioBien = ({
 
     const formData = new FormData(); // Crear una nueva instancia de FormData
     // Agregar los campos del formulario a FormData
+    formData.append("descripcion", values.descripcion || "");
     formData.append("marca", values.marca || "");
     formData.append("modelo", values.modelo || "");
     formData.append("serie", values.serie || "");
@@ -266,7 +262,6 @@ const FormularioBien = ({
     if (storedTrabajador) {
       trabajador = JSON.parse(storedTrabajador);
       formData.append("trabajador_id", trabajador.id || null);
-
     }
 
     // Si hay una imagen seleccionada, añadirla a FormData
@@ -286,7 +281,8 @@ const FormularioBien = ({
       notification.success({
         message: data.msg,
       });
-      setBienes(null);
+      setBienes([]); // Esto oculta el formulario para bienes sobrantes
+      setIsSobrante(false); // También puedes desactivar el estado de sobrante
       setBuscar("");
       searchInputRef.current.focus();
     } else {
@@ -295,6 +291,24 @@ const FormularioBien = ({
       });
     }
   };
+
+  useEffect(() => {
+    const storedTrabajador = localStorage.getItem("trabajador_id");
+
+    // Inicializar `trabajador` solo si `storedTrabajador` existe
+    let trabajador = null;
+    if (storedTrabajador) {
+      trabajador = JSON.parse(storedTrabajador);
+    }
+
+    if (sbnSobrante) {
+      form.setFieldValue("sbn", sbnSobrante?.sbn);
+      form.setFieldValue("dni", trabajador?.dni);
+      if (trabajador) {
+        setNombreTrabajador(trabajador.nombre);
+      }
+    }
+  }, [sbnSobrante]); // Se ejecuta cuando sbnSobrante cambia
   return (
     <>
       <Form
@@ -321,12 +335,12 @@ const FormularioBien = ({
                 className="form-item-codigo"
                 rules={[
                   {
-                    required: sobrante ? true : false,
+                    required: false,
                     message: "El Código o SBN es obligatorio",
                   },
                 ]}
               >
-                <Input className="form-item-input" disabled={sobrante ? false: true} />
+                <Input className="form-item-input" disabled={true} />
               </Form.Item>
 
               <Form.Item
@@ -340,7 +354,10 @@ const FormularioBien = ({
                   },
                 ]}
               >
-                <Input className="form-item-input" disabled={sobrante ? false: true} />
+                <Input
+                  className="form-item-input"
+                  disabled={sobrante ? false : true}
+                />
               </Form.Item>
             </Flex>
 
@@ -367,11 +384,11 @@ const FormularioBien = ({
                   }
                   allowClear
                   disabled={data?.estado === "2"}
-                  options={marcas?.map(item =>{
-                    return{
+                  options={marcas?.map((item) => {
+                    return {
                       value: item.nombre,
-                      label: item.nombre
-                    }
+                      label: item.nombre,
+                    };
                   })}
                 />
               </Form.Item>
@@ -396,7 +413,7 @@ const FormularioBien = ({
                 className="form-item"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : isRequired,
+                    required: data?.estado === "2" ? false : isRequired,
                     message: "La serie es obligatoria!",
                   },
                 ]}
@@ -412,7 +429,7 @@ const FormularioBien = ({
                 className="form-item"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : true,
+                    required: data?.estado === "2" ? false : true,
                     message: "El color es obligatoria!",
                   },
                 ]}
@@ -428,27 +445,53 @@ const FormularioBien = ({
                   }
                   allowClear
                   disabled={data?.estado === "2"}
-                  options={colores?.map(item =>{
-                    return{
+                  options={colores?.map((item) => {
+                    return {
                       value: item.DESCRIPCION,
-                      label: item.DESCRIPCION
-                    }
+                      label: item.DESCRIPCION,
+                    };
                   })}
                 />
               </Form.Item>
               <Form.Item
-                label="Estado Patrimonial"
-                name="estado"
-                className="form-item"
+                label="Estado Conservación"
+                name="estado_patrimonial"
+                className="form-item-large"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : true,
-                    message: "El estado patrimonial es obligatorio!",
+                    required: data?.estado === "2" ? false : true,
+                    message: "El estado de conservación es obligatorio!",
                   },
                 ]}
               >
                 <Select
                   className="form-item-input"
+                  options={[
+                    {
+                      value: "5",
+                      label: "Nuevo",
+                    },
+                    {
+                      value: "1",
+                      label: "Bueno",
+                    },
+                    {
+                      value: "2",
+                      label: "Regular",
+                    },
+                    {
+                      value: "3",
+                      label: "Malo",
+                    },
+                    {
+                      value: "7",
+                      label: "RAEE",
+                    },
+                    {
+                      value: "6",
+                      label: "Chatarra",
+                    },
+                  ]}
                   showSearch
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -458,16 +501,6 @@ const FormularioBien = ({
                   }
                   allowClear
                   disabled={data?.estado === "2"}
-                  options={[
-                    {
-                      value: "1",
-                      label: "Activo",
-                    },
-                    {
-                      value: "2",
-                      label: "Baja",
-                    },
-                  ]}
                 />
               </Form.Item>
 
@@ -477,7 +510,7 @@ const FormularioBien = ({
                 className="form-item"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : true,
+                    required: data?.estado === "2" ? false : true,
                     message: "La situación es obligatoria!",
                   },
                 ]}
@@ -523,44 +556,18 @@ const FormularioBien = ({
                 <Input allowClear disabled={data?.estado === "2"} />
               </Form.Item>
               <Form.Item
-                label="Estado Conservación"
-                name="estado_patrimonial"
-                className="form-item-large"
+                label="Estado Patrimonial"
+                name="estado"
+                className="form-item"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : true,
-                    message: "El estado de conservación es obligatorio!",
+                    required: data?.estado === "2" ? false : true,
+                    message: "El estado patrimonial es obligatorio!",
                   },
                 ]}
               >
                 <Select
                   className="form-item-input"
-                  options={[
-                    {
-                      value: "5",
-                      label: "Nuevo",
-                    },
-                    {
-                      value: "1",
-                      label: "Bueno",
-                    },
-                    {
-                      value: "2",
-                      label: "Regular",
-                    },
-                    {
-                      value: "3",
-                      label: "Malo",
-                    },
-                    {
-                      value: "7",
-                      label: "RAEE",
-                    },
-                    {
-                      value: "6",
-                      label: "Chatarra",
-                    },
-                  ]}
                   showSearch
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -570,29 +577,36 @@ const FormularioBien = ({
                   }
                   allowClear
                   disabled={data?.estado === "2"}
+                  options={[
+                    {
+                      value: "1",
+                      label: "Activo",
+                    },
+                    {
+                      value: "2",
+                      label: "Baja",
+                    },
+                  ]}
                 />
               </Form.Item>
             </Flex>
 
             <Flex justify="start" align="center" horizontal gap={"10px"}>
               <Form.Item label="Trabajador" className="form-item-x-large">
-                <Input disabled  allowClear value={nombreTrabajador}/>
+                <Input disabled allowClear value={nombreTrabajador} />
               </Form.Item>
               <Form.Item
                 label="Dni"
                 name="dni"
                 rules={[
                   {
-                    required: data.estado === "2" ? false : true,
+                    required: data?.estado === "2" ? false : true,
                     message: "El dni es obligatoria!",
                   },
                 ]}
                 className="form-item-codigo"
               >
-                <Input
-                  allowClear
-                  disabled={data?.estado === "2"}
-                />
+                <Input allowClear disabled={data?.estado === "2"} />
               </Form.Item>
             </Flex>
           </div>

@@ -88,7 +88,7 @@ const MenuInventario = ({ setTitle }) => {
           <strong>Etiqueta para Bienes</strong>
         </p>
       </section>
-      <section
+      {/* <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/inventario/etiquetas")}
       >
@@ -110,7 +110,7 @@ const MenuInventario = ({ setTitle }) => {
           {" "}
           <strong>Etiqueta para Ubicaciones</strong>
         </p>
-      </section>
+      </section> */}
     </div>
   );
 };

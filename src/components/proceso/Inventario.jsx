@@ -28,6 +28,7 @@ const Inventario = ({ setTitle }) => {
   const [filteredUbicaciones, setFilteredUbicaciones] = useState([]);
   const [trabajadores, setTrabajadores] = useState([]);
   const [filteredTrabajador, setFilteredTrabajador] = useState(null);
+  const [sbnSobrante, setSbnSobrante] = useState(null);
   useEffect(() => {
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
@@ -70,35 +71,50 @@ const Inventario = ({ setTitle }) => {
     getTrabajador();
   }, []);
 
+  // useEffect que llama a getBienes cuando 'buscar' cambia
   useEffect(() => {
-    if (buscar !== "") {
-      getBienes();
+    if (buscar !== "" && buscar?.length === 12) {
+      getBienes(); // Llama a la función sin pasar el evento
     } else {
       limpiarData();
     }
   }, [buscar]);
 
+  // Manejo de la tecla "Enter"
+  const handleKeyPress = (e) => {
+    console.log("prueba");
+    if (e.key === "Enter") {
+      getBienes(); // Llama a getBienes sin pasar 'e' como parámetro
+    }
+  };
+
+  // Función para obtener los bienes
   const getBienes = async () => {
-    if (buscar !== "" && buscar?.length === 12) {
+    // Si el usuario presiona "Enter" o la longitud del input es de 12 caracteres
+    try {
       const response = await fetch(
         `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${buscar}`
       );
 
-      const info = await response.json(); // Asegúrate de obtener la data
-
       if (response.ok) {
+        const info = await response.json(); // Obtener los datos
+
         // Si no hay bienes en la respuesta, entonces es sobrante
         if (!info.info) {
           setIsSobrante(true);
           setBienes(null);
         } else {
-          setIsSobrante(false);
+          if (info.info.tipo === "sobrante") {
+            setIsSobrante(true);
+          } else {
+            setIsSobrante(false);
+          }
           setBienes(info.info); // Guardar los bienes en el estado si se encuentran
         }
       } else {
-        // Manejo de otros errores, como el 404 o el 403
+        const info = await response.json(); // Obtener el mensaje de error
         if (response.status === 403) {
-          message.warning("El bien ya ha sido inventariado.");
+          message.warning(info.msg);
         } else if (response.status === 404) {
           // Aquí lo tratamos como un sobrante
           setIsSobrante(true);
@@ -109,8 +125,12 @@ const Inventario = ({ setTitle }) => {
           message.error("Hubo un error al buscar el bien.");
         }
       }
+    } catch (error) {
+      message.error("Hubo un error al realizar la búsqueda.");
+      console.error(error);
     }
   };
+
   const getSedes = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/sedes`);
 
@@ -166,12 +186,15 @@ const Inventario = ({ setTitle }) => {
     if (
       ubicacionValues.sede_id !== "" &&
       ubicacionValues.dependencia_id !== "" &&
-      ubicacionValues.ubicacion_id
+      ubicacionValues.ubicacion_id &&
+      filteredTrabajador !== null
     ) {
       const newValue = e.target.value;
       setBuscar(newValue);
     } else {
-      message.warning("Seleccione todos los campos de ubicación.");
+      message.warning(
+        "Seleccione todos los campos de ubicación y el responsable."
+      );
     }
 
     if (e === "") {
@@ -208,10 +231,47 @@ const Inventario = ({ setTitle }) => {
       setTrabajadores([]);
     }
   };
-  const registrarSobrante = () => {
-    setBienes([]);
-    setIsSobrante(true);
+  const registrarSobrante = async () => {
+    const sede = localStorage.getItem("sede_id"); // Guardar en localStorage
+    const ubicacion = localStorage.getItem("ubicacion_id");
+    const usuario = localStorage.getItem("usuario");
+    const dependencia = localStorage.getItem("dependencia_id")
+    const trabajador = localStorage.getItem("trabajador_id"); // Eliminar del localStorage
+
+    console.log(sede);
+    console.log(ubicacion);
+    console.log(dependencia);
+    console.log(trabajador);
+    if (
+      sede !== null &&
+      ubicacion !== null &&
+      dependencia !== null &&
+      trabajador !== null
+    ) {
+      setBienes(null);
+      setIsSobrante(true);
+      const ubi = ubicaciones.filter((item) => item.id == ubicacion);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_BASE
+        }/bienes/sobrante/sbn?id_usuario=${usuario}&id_sede=${sede}&id_ubicacion=${
+          ubi?.at(-1).tipo_ubicac + "" + ubi?.at(-1).ubicac_fisica
+        }`
+      );
+      if (response.ok) {
+        const info = await response.json();
+        setSbnSobrante(info); // Guardar los bienes en el estado si la respuesta es exitosa
+        console.log(info);
+      } else {
+        setSbnSobrante(null);
+      }
+    } else {
+      message.warning(
+        "Seleccione todo los campos de ubicación y el trabajador."
+      );
+    }
   };
+
   return (
     <>
       <Flex className="inventario-container" gap={"10px"}>
@@ -233,8 +293,20 @@ const Inventario = ({ setTitle }) => {
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             onChange={(e) => {
-              setUbicacionValues((value) => ({ ...value, sede_id: e }));
-              localStorage.setItem("sede_id", e); // Guardar en localStorage
+              if (e) {
+                setUbicacionValues((value) => ({ ...value, sede_id: e }));
+                localStorage.setItem("sede_id", e); // Guardar en localStorage
+              } else {
+                setUbicacionValues((value) => ({
+                  ...value,
+                  sede_id: null,
+                  ubicacion_id: null,
+                  dependencia_id: null,
+                }));
+                localStorage.removeItem("sede_id"); // Guardar en localStorage
+                localStorage.removeItem("dependencia_id"); // Guardar en localStorage
+                localStorage.removeItem("ubicacion_id"); // Guardar en localStorage
+              }
             }}
             popupMatchSelectWidth={false}
           />
@@ -255,8 +327,22 @@ const Inventario = ({ setTitle }) => {
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             onChange={(e) => {
-              setUbicacionValues((value) => ({ ...value, dependencia_id: e }));
-              localStorage.setItem("dependencia_id", e); // Guardar en localStorage
+              if (e) {
+                setUbicacionValues((value) => ({
+                  ...value,
+                  dependencia_id: e,
+                }));
+                localStorage.setItem("dependencia_id", e); // Guardar en localStorage
+                localStorage.setItem("dependencia_tipo_ubicac", e); // Guardar en localStorage
+              } else {
+                setUbicacionValues((value) => ({
+                  ...value,
+                  dependencia_id: null,
+                  ubicacion_id: null,
+                }));
+                localStorage.removeItem("dependencia_id");
+                localStorage.removeItem("ubicacion_id");
+              }
             }}
             value={ubicacionValues?.dependencia_id || undefined}
           />
@@ -277,13 +363,21 @@ const Inventario = ({ setTitle }) => {
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             onChange={(e) => {
-              setUbicacionValues((value) => ({ ...value, ubicacion_id: e }));
-              localStorage.setItem("ubicacion_id", e); // Guardar en localStorage
+              if (e) {
+                setUbicacionValues((value) => ({ ...value, ubicacion_id: e }));
+                localStorage.setItem("ubicacion_id", e); // Guardar en localStorage
+              } else {
+                setUbicacionValues((value) => ({
+                  ...value,
+                  ubicacion_id: null,
+                }));
+                localStorage.removeItem("ubicacion_id"); // Guardar en localStorage
+              }
             }}
             value={ubicacionValues?.ubicacion_id || undefined}
           />
           <Select
-            placeholder="Trabajador"
+            placeholder="Responsable"
             style={{ width: "25%" }}
             options={trabajadores.map((item) => {
               return {
@@ -320,6 +414,9 @@ const Inventario = ({ setTitle }) => {
 
                 // Actualizar el estado con el DNI seleccionado
                 setFilteredTrabajador(value);
+              } else {
+                localStorage.removeItem("trabajador_id");
+                setFilteredTrabajador(null);
               }
             }}
             value={filteredTrabajador}
@@ -340,6 +437,7 @@ const Inventario = ({ setTitle }) => {
             allowClear
             ref={searchInputRef}
             value={buscar}
+            onKeyDown={handleKeyPress}
           />
           {isSobrante ? (
             <Tag
@@ -382,6 +480,7 @@ const Inventario = ({ setTitle }) => {
         >
           Limpiar Filtros
         </Button>
+
         <Button
           onClick={registrarSobrante}
           style={{ backgroundColor: "#4DA362", color: "white" }}
@@ -391,21 +490,12 @@ const Inventario = ({ setTitle }) => {
       </Flex>
 
       <Flex justify="flex-start" className="inventario-content" gap={"10px"}>
-        {bienes === null || isSobrante ? (
+        {Array.isArray(bienes) && bienes.length === 0 ? null : bienes === // No mostrar nada si bienes es un array vacío
+            null && isSobrante ? (
+          // Mostrar el formulario para bienes sobrantes
           <div
             style={{ width: "100%", height: "100%", backgroundColor: "white" }}
           >
-            {isSobrante ? (
-              <FormularioBien
-                data={{}}
-                setBienes={setBienes}
-                sbn={buscar}
-                sobrante={isSobrante}
-              /> // Mostrar el formulario vacío
-            ) : null}
-          </div>
-        ) : (
-          <>
             <FormularioBien
               data={bienes}
               setBienes={setBienes}
@@ -415,9 +505,27 @@ const Inventario = ({ setTitle }) => {
               trabajador={filteredTrabajador}
               setBuscar={setBuscar}
               searchInputRef={searchInputRef}
+              sbnSobrante={sbnSobrante}
+              setIsSobrante={setIsSobrante}
+              
             />
-          </>
-        )}
+          </div>
+        ) : bienes !== null ? (
+          // Mostrar el formulario para bienes encontrados
+          <FormularioBien
+            data={bienes}
+            setBienes={setBienes}
+            sbn={buscar}
+            sobrante={isSobrante}
+            ubicacion={ubicacionValues}
+            trabajador={filteredTrabajador}
+            setBuscar={setBuscar}
+            searchInputRef={searchInputRef}
+            sbnSobrante={sbnSobrante}
+            setIsSobrante={setIsSobrante}
+
+          />
+        ) : null}
       </Flex>
     </>
   );

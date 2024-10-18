@@ -23,7 +23,6 @@ const TarjetasCargo = ({ setTitle }) => {
     dependenciaId: null,
     ubicacionId: null,
   });
-
   const [selectedUbicacion, setSelectedUbicacion] = useState(null);
   const [selectedDependencia, setSelectedDependencia] = useState(null);
   const [ubicac, setUbicac] = useState(null);
@@ -60,38 +59,47 @@ const TarjetasCargo = ({ setTitle }) => {
   };
 
   const handleSedeChange = (sedeId) => {
-    setIds((value) => ({ ...value, sedeId: sedeId }));
-    const filteredDependencias = dependencias?.filter(
-      (item) => item.sede_id == sedeId
-    );
+    if (!sedeId) {
+      setSelectedDependencia(null);
+      setSelectedUbicacion(null);
+      setIds((values) => ({
+        ...values,
+        dependenciaId: null,
+        ubicacionId: null,
+      }));
+    } else {
+      setIds((value) => ({ ...value, sedeId: sedeId }));
+      const filteredDependencias = dependencias?.filter(
+        (item) => item.sede_id == sedeId
+      );
 
-    setSelectedDependencia(filteredDependencias); // Establecer las dependencias filtradas
-    setIds((value) => ({ ...value, dependenciaId: null, ubicacionId: null }));
-
-    getEtiquetas();
+      setSelectedDependencia(filteredDependencias); // Establecer las dependencias filtradas
+      setIds((value) => ({ ...value, dependenciaId: null, ubicacionId: null }));
+    }
   };
 
   const handleDependenciaChange = (dependenciaId) => {
-    setIds((value) => ({ ...value, dependenciaId: dependenciaId }));
-    
-    console.log('Dependencia seleccionada:', dependenciaId);
-    console.log('Todas las ubicaciones:', ubicaciones);
-  
-    // Filtrar las ubicaciones según la dependencia seleccionada
-    const filteredUbicaciones = ubicaciones?.filter(
-      (item) => item.dependencia_id === dependenciaId
-    );
-    
-    console.log('Ubicaciones filtradas:', filteredUbicaciones);
-    setSelectedUbicacion(null)
-    setSelectedUbicacion(filteredUbicaciones);
-    setUbicac(filteredUbicaciones);
-    getEtiquetas();
+    if (!dependenciaId) {
+      setSelectedUbicacion(null);
+      setIds((value) => ({ ...value, ubicacionId: null, dependenciaId: null }));
+
+    } else {
+      setIds((value) => ({ ...value, dependenciaId: dependenciaId }));
+
+      // Filtrar las ubicaciones según la dependencia seleccionada
+      const filteredUbicaciones = ubicaciones?.filter(
+        (item) => item.dependencia_id === dependenciaId
+      );
+
+      setSelectedUbicacion(null);
+      setSelectedUbicacion(filteredUbicaciones);
+      setUbicac(filteredUbicaciones);
+    }
   };
 
   const handleUbicacionChange = (ubicacionId) => {
     setIds((value) => ({ ...value, ubicacionId: ubicacionId }));
-    
+
     getEtiquetas();
   };
 
@@ -155,7 +163,6 @@ const TarjetasCargo = ({ setTitle }) => {
     setEtiquetas([]);
   };
 
-  console.log(ubicac);
   return (
     <Flex
       justify="center"
