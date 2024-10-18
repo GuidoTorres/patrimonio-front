@@ -166,6 +166,10 @@ const Faltantes = ({ setTitle }) => {
         setFilters([])
         getBienes()
       };
+
+      const registrarFaltantes = async () => {
+        
+      };
   return (
     <>
     <div style={{ backgroundColor: "white", borderRadius: "10px" }}>
@@ -294,6 +298,12 @@ const Faltantes = ({ setTitle }) => {
           >
             {" "}
             Limpiar Busqueda
+          </Button>
+          <Button
+            style={{ backgroundColor: "#4DA362", color: "white" }}
+            onClick={LimpiarBusqueda}
+          >
+            Registrar Faltantes
           </Button>
         </Flex>
       </Flex>

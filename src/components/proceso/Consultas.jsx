@@ -77,6 +77,16 @@ const Consultas = ({ setTitle }) => {
       align: "center",
     },
     {
+      title: "TIPO",
+      render: (_, record) =>
+        record.tipo === "activo" ? (
+          <Tag color="blue">Activo</Tag>
+        ) : (
+          <Tag color="gold">Sobrante</Tag>
+        ),
+      align: "center",
+    },
+    {
       title: "SITUACIÓN",
       render: (_, record) =>
         record.situacion ? (
