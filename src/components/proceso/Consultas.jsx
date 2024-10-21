@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Select, Button, Input, Table, Descriptions, Tag, Image } from "antd";
+import {
+  Flex,
+  Select,
+  Button,
+  Input,
+  Table,
+  Descriptions,
+  Tag,
+  Image,
+} from "antd";
 import ModalEditarBien from "../consultas/ModalEditarBien";
 const Consultas = ({ setTitle }) => {
   useEffect(() => {
@@ -17,8 +26,8 @@ const Consultas = ({ setTitle }) => {
   const [trabajadores, setTrabajadores] = useState([]);
   const [dni, setDni] = useState(null);
   const [usuario, setUsuario] = useState("");
-  const [edit, setEdit] = useState(null)
-  const [modal, setModal] = useState(false)
+  const [edit, setEdit] = useState(null);
+  const [modal, setModal] = useState(false);
   const getBienes = async () => {
     const response = await fetch(
       `${process.env.REACT_APP_BASE}/bienes/inventariados`
@@ -50,11 +59,15 @@ const Consultas = ({ setTitle }) => {
   const columns = [
     {
       title: "COD. SBN",
-      render: (_, record) => <Flex justify="left" align="center" gap={"2px"}>
-
-        <Image dataSource={record.foto} style={{width:"20px", heigth: "20px"}}/>
-        <p>{record?.sbn}</p>
-      </Flex>,
+      render: (_, record) => (
+        <Flex justify="left" align="center" gap={"2px"}>
+          <Image
+            dataSource={record.foto}
+            style={{ width: "20px", heigth: "20px" }}
+          />
+          <p>{record?.sbn}</p>
+        </Flex>
+      ),
       align: "center",
     },
     {
@@ -87,8 +100,10 @@ const Consultas = ({ setTitle }) => {
       render: (_, record) =>
         record.tipo === "activo" ? (
           <Tag color="blue">Activo</Tag>
-        ) : (
+        ) : record.tipo === "sobrante" ? (
           <Tag color="gold">Sobrante</Tag>
+        ) : (
+          <Tag color="volcano">Faltante</Tag>
         ),
       align: "center",
     },
@@ -104,7 +119,9 @@ const Consultas = ({ setTitle }) => {
     },
     {
       title: "ACCIONES",
-      render: (_, record) => <Button onClick={() => handleEditar(record)}>Editar</Button>,
+      render: (_, record) => (
+        <Button onClick={() => handleEditar(record)}>Editar</Button>
+      ),
       align: "center",
     },
   ];
@@ -115,12 +132,11 @@ const Consultas = ({ setTitle }) => {
     });
   };
 
-  const handleEditar = (record) =>{
+  const handleEditar = (record) => {
     console.log("prueba");
-    setEdit(record)
-    setModal(true)
-
-  }
+    setEdit(record);
+    setModal(true);
+  };
 
   // Construir la URL con los filtros dinámicos
   const buildQueryParams = () => {
@@ -131,6 +147,7 @@ const Consultas = ({ setTitle }) => {
         query.append(key, filters[key]);
       }
     });
+    query.append("inventariado", true);
 
     return query.toString();
   };
@@ -154,16 +171,12 @@ const Consultas = ({ setTitle }) => {
       {
         key: "1",
         label: "Detalles",
-        children: record.detalles
-          ? record.detalles
-          : "SIN DETALLES",
+        children: record.detalles ? record.detalles : "SIN DETALLES",
       },
       {
         key: "2",
         label: "Observaciones",
-        children: record.observacion
-          ? record.observacion
-          : "SIN OBSERVACIONES",
+        children: record.observacion ? record.observacion : "SIN OBSERVACIONES",
       },
       {
         key: "3",
@@ -381,7 +394,15 @@ const Consultas = ({ setTitle }) => {
           }}
         />
       </section>
-      {modal && <ModalEditarBien modal={modal} setModal={setModal} edit={edit} setEdit={setEdit} getBienes={getBienes}/>}
+      {modal && (
+        <ModalEditarBien
+          modal={modal}
+          setModal={setModal}
+          edit={edit}
+          setEdit={setEdit}
+          getBienes={getBienes}
+        />
+      )}
     </>
   );
 };

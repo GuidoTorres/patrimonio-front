@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   },
   tableCellHeader: {
     fontWeight: "bold",
+    margin: 5,
   },
   tableCell: {
     margin: 5,
@@ -107,220 +108,195 @@ const chunkData = (data, firstPageSize, subsequentPageSize) => {
 };
 
 const CargoPDF = ({ registros }) => {
-  const registrosPorPagina = 25; // Número de registros por página
-  const paginatedData = chunkData(registros, registrosPorPagina);
+  const registrosPorPagina1 = 20; // Número de registros por página para el primer formato
+  const registrosPorPagina2 = 6; // Número de registros por página para el segundo formato
 
-  console.log(registros);
-
+  // Paginación de los datos para cada formato
+  const paginatedData1 = chunkData(
+    registros,
+    registrosPorPagina1,
+    registrosPorPagina1
+  );
+  const paginatedData2 = chunkData(
+    registros,
+    registrosPorPagina2,
+    registrosPorPagina2
+  );
   return (
     <Document>
-      {paginatedData
-        .filter((item) => item.estado_patrimonial === "1")
-        .map((pagina, pageIndex) => (
-          <Page
-            size="A4"
-            style={styles.page}
-            render={({ pageNumber, totalPages }) => (
-              <>
-                {/* Header */}
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                  }}
-                >
-                  <View style={{ flex: 2, alignItems: "flex-start" }}>
-                    <Image
-                      src={img}
-                      style={{ height: "50px", width: "100px" }}
-                    />
-                  </View>
-                  <View
-                    style={{ flex: 4, alignItems: "center", marginTop: "20px" }}
-                  >
-                    <Text>Comisión de Inventario Bienes Muebles</Text>
-                    <Text>{"Año" + " " + dayjs().format("YYYY")}</Text>
-                  </View>
-                  <View style={{ flex: 2, alignItems: "flex-end" }}>
-                    <Image
-                      src={img2}
-                      style={{ height: "50px", width: "80px" }}
-                    />
-
-                    <Text>{pageIndex + 1 + "/" + paginatedData.length}</Text>
-                    <Text>{dayjs().format("DD/MM/YYYY")}</Text>
-                  </View>
+      {paginatedData1.filter(item => item.estado == "1").map((pagina, pageIndex) => (
+        <Page
+          size="A4"
+          style={styles.page}
+          render={({ pageNumber, totalPages }) => (
+            <>
+              {/* Header */}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                }}
+              >
+                <View style={{ flex: 2, alignItems: "flex-start" }}>
+                  <Image src={img} style={{ height: "50px", width: "100px" }} />
                 </View>
                 <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "center",
-                    marginTop: "10px",
-                  }}
+                  style={{ flex: 4, alignItems: "center", marginTop: "20px" }}
                 >
-                  <View style={{ flex: 4, alignItems: "center" }}>
-                    <Text style={{ fontSize: "12px" }}>TARJETA DE CARGO</Text>
-                    <Text>{"EJERCICIO" + " " + dayjs().format("YYYY")}</Text>
-                  </View>
+                  <Text style={{ fontSize: "12px" }}>
+                    COMISIÓN DE INVENTARIO BIENES MUEBLES
+                  </Text>
+                  <Text style={{ fontSize: "12px" }}>
+                    {"Año" + " " + dayjs().format("YYYY")}
+                  </Text>
                 </View>
+                <View style={{ flex: 2, alignItems: "flex-end" }}>
+                  <Image src={img2} style={{ height: "50px", width: "80px" }} />
 
-                {/* DATOS */}
+                  <Text>{pageIndex + 1 + "/" + paginatedData1.length}</Text>
+                  <Text>{dayjs().format("DD/MM/YYYY")}</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "center",
+                  marginTop: "10px",
+                }}
+              >
+                <View style={{ flex: 4, alignItems: "center" }}>
+                  <Text style={{ fontSize: "12px" }}>TARJETA DE CARGO</Text>
+                  <Text style={{ fontSize: "10px" }}>{"EJERCICIO" + " " + dayjs().format("YYYY")}</Text>
+                </View>
+              </View>
 
+              {/* DATOS */}
+
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "center",
+                  marginTop: "10px",
+                  gap: "5px",
+                }}
+              >
+                <View style={{ flex: 1, alignItems: "flex-start" }}>
+                  <Text>USUARIO:{pagina[0]?.trabajadore?.nombre}</Text>
+                  <Text>DEPENDENCIA: {pagina[0]?.dependencia?.nombre}</Text>
+                  <Text>UBICACIÓN: {pagina[0]?.ubicacione?.nombre}</Text>
+                </View>
+                <View style={{ flex: 1, alignItems: "flex-start" }}>
+                  <Text>SEDE: {pagina[0]?.sede?.nombre}</Text>
+                  <Text>JEFE DE GRUPO: {pagina[0]?.usuario?.jefe?.nombre}</Text>
+                </View>
+              </View>
+
+              {/* Tabla */}
+              <View
+                style={{
+                  width: "100%",
+                  marginTop: "20px",
+                  borderBottomWidth: "1px",
+                  height: "70%",
+                }}
+              >
+                {/* Cabecera de la tabla */}
                 <View
                   style={{
+                    width: "100%",
                     display: "flex",
                     flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "center",
-                    marginTop: "10px",
-                    gap: "5px",
+                    borderBottomWidth: "1px",
+                    borderTopWidth: "1px",
                   }}
                 >
-                  <View style={{ flex: 1, alignItems: "flex-start" }}>
-                    <Text>Usuario:{pagina[0]?.trabajadore?.nombre}</Text>
-                    <Text>Dependencia: {pagina[0]?.dependencia?.nombre}</Text>
-                    <Text>Ubicación: {pagina[0]?.ubicacione?.nombre}</Text>
+                  <View style={{ width: "5%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      N°
+                    </Text>
                   </View>
-                  <View style={{ flex: 1, alignItems: "flex-start" }}>
-                    <Text>Sede: {pagina[0]?.sede?.nombre}</Text>
-                    <Text>
-                      Jefe de Grupo: {pagina[0]?.usuario?.jefe?.nombre}
+                  <View style={{ width: "15%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Código
+                    </Text>
+                  </View>
+                  <View style={{ width: "20%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Descripción
+                    </Text>
+                  </View>
+                  <View style={{ width: "15%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Marca
+                    </Text>
+                  </View>
+                  <View style={{ width: "15%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Modelo
+                    </Text>
+                  </View>
+                  <View style={{ width: "10%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Color
+                    </Text>
+                  </View>
+                  <View style={{ width: "15%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      Serie
+                    </Text>
+                  </View>
+                  <View style={{ width: "5%" }}>
+                    <Text
+                      style={[styles.tableCellHeader, { textAlign: "center" }]}
+                    >
+                      E
                     </Text>
                   </View>
                 </View>
 
-                {/* Tabla */}
-                <View
-                  style={{
-                    width: "100%",
-                    marginTop: "20px",
-                    borderBottomWidth: "1px",
-                    height: "70%",
-                  }}
-                >
-                  {/* Cabecera de la tabla */}
+                {pagina.map((registro, index) => (
                   <View
                     style={{
                       width: "100%",
                       display: "flex",
                       flexDirection: "row",
-                      borderBottomWidth: "1px",
-                      borderTopWidth: "1px",
                     }}
+                    key={index}
                   >
                     <View style={{ width: "5%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        N°
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {pageIndex * registrosPorPagina1 + index + 1}
                       </Text>
                     </View>
                     <View style={{ width: "15%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Código
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro.sbn}
                       </Text>
                     </View>
                     <View style={{ width: "20%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Descripción
+                      <Text style={[styles.tableCell, { textAlign: "left" }]}>
+                        {registro.descripcion}
                       </Text>
-                    </View>
-                    <View style={{ width: "15%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Marca
-                      </Text>
-                    </View>
-                    <View style={{ width: "15%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Modelo
-                      </Text>
-                    </View>
-                    <View style={{ width: "10%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Color
-                      </Text>
-                    </View>
-                    <View style={{ width: "15%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        Serie
-                      </Text>
-                    </View>
-                    <View style={{ width: "5%" }}>
-                      <Text
-                        style={[
-                          styles.tableCellHeader,
-                          { textAlign: "center" },
-                        ]}
-                      >
-                        E
-                      </Text>
-                    </View>
-                  </View>
-
-                  {pagina.map((registro, index) => (
-                    <View
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "row",
-                      }}
-                      key={index}
-                    >
-                      <View style={{ width: "5%" }}>
-                        <Text
-                          style={[styles.tableCell, { textAlign: "center" }]}
-                        >
-                          {pageIndex * registrosPorPagina + index + 1}
-                        </Text>
-                      </View>
-                      <View style={{ width: "15%" }}>
-                        <Text
-                          style={[styles.tableCell, { textAlign: "center" }]}
-                        >
-                          {registro.sbn}
-                        </Text>
-                      </View>
-                      <View style={{ width: "20%" }}>
-                        <Text style={[styles.tableCell, { textAlign: "left" }]}>
-                          {registro.descripcion}
-                        </Text>
-                        {/* <Text style={{ textAlign: "left", marginTop: "0px" }}>
+                      {/* <Text style={{ textAlign: "left", marginTop: "0px" }}>
                         Situación:{registro?.situacion ? "uso" : "desuso"}
                       </Text>
                       <Text style={{ textAlign: "left", marginTop: "0px" }}>
@@ -329,129 +305,113 @@ const CargoPDF = ({ registros }) => {
                       <Text style={{ textAlign: "left", marginTop: "0px" }}>
                         Detalles:{registro?.detalles}
                       </Text> */}
-                      </View>
-                      <View style={{ width: "15%" }}>
-                        <Text
-                          style={[
-                            styles.tableCell,
-                            { textAlign: "center", marginTop: "0px" },
-                          ]}
-                        >
-                          {registro.marca}
-                        </Text>
-                      </View>
-                      <View style={{ width: "15%" }}>
-                        <Text
-                          style={[
-                            styles.tableCell,
-                            { textAlign: "center", marginTop: "0px" },
-                          ]}
-                        >
-                          {registro.modelo}
-                        </Text>
-                      </View>
-                      <View style={{ width: "10%" }}>
-                        <Text
-                          style={[styles.tableCell, { textAlign: "center" }]}
-                        >
-                          {registro.color}
-                        </Text>
-                      </View>
-                      <View style={{ width: "15%" }}>
-                        <Text
-                          style={[styles.tableCell, { textAlign: "center" }]}
-                        >
-                          {registro.serie}
-                        </Text>
-                      </View>
-                      <View style={{ width: "5%" }}>
-                        <Text
-                          style={[styles.tableCell, { textAlign: "center" }]}
-                        >
-                          {registro?.estado_patrimonial === "1"
-                            ? "B"
-                            : registro?.estado_patrimonial === "2"
-                            ? "R"
-                            : registro?.estado_patrimonial === "3"
-                            ? "M"
-                            : registro?.estado_patrimonial === "7"
-                            ? "X"
-                            : registro?.estado_patrimonial === "6"
-                            ? "Y"
-                            : registro?.estado_patrimonial === "5"
-                            ? "N"
-                            : ""}
-                        </Text>
-                      </View>
                     </View>
-                  ))}
+                    <View style={{ width: "15%" }}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro.marca}
+                      </Text>
+                    </View>
+                    <View style={{ width: "15%" }}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro.modelo}
+                      </Text>
+                    </View>
+                    <View style={{ width: "10%" }}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro.color}
+                      </Text>
+                    </View>
+                    <View style={{ width: "15%" }}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro.serie}
+                      </Text>
+                    </View>
+                    <View style={{ width: "5%" }}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {registro?.estado_patrimonial === "1"
+                          ? "B"
+                          : registro?.estado_patrimonial === "2"
+                          ? "R"
+                          : registro?.estado_patrimonial === "3"
+                          ? "M"
+                          : registro?.estado_patrimonial === "7"
+                          ? "X"
+                          : registro?.estado_patrimonial === "6"
+                          ? "Y"
+                          : registro?.estado_patrimonial === "5"
+                          ? "N"
+                          : ""}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+              <View>
+                <Text style={{ fontSize: "6px" }}>
+                  Leyenda: N=Nuevo B=Bueno R=Regular M=Malo X=RAEE Y=Chatarra
+                </Text>
+              </View>
+
+              {/* Footer - Firmas */}
+              <View style={styles.footer}>
+                <View style={styles.signatureRow}>
+                  <View
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>__________________________________</Text>
+                    <Text>Presidente Comisión de Inv 2024</Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>_________________________</Text>
+                    <Text>V.B Control Patrimonial</Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>__________________</Text>
+                    <Text>Usuario Final</Text>
+                  </View>
                 </View>
-                <View>
-                  <Text style={{ fontSize: "6px" }}>
-                    Leyenda: N=Nuevo B=Bueno R=Regular M=Malo X=RAEE Y=Chatarra
+
+                <View style={styles.footerText}>
+                  <Text style={{ fontSize: "6px", width: "100%" }}>
+                    El usuario declara haber mostrado todos los bienes que se
+                    encuentran bajo responsabilidad...
+                  </Text>
+                  <Text style={{ fontSize: "6px", width: "100%" }}>
+                    El usuario es responsable de la permanencia y conservación
+                    de cada uno de los bienes muebles...
+                  </Text>
+                  <Text style={{ fontSize: "6px", width: "100%" }}>
+                    Cualquier necesidad de traslado del bien mueble dentro o
+                    fuera del local de la entidad...
                   </Text>
                 </View>
-
-                {/* Footer - Firmas */}
-                <View style={styles.footer}>
-                  <View style={styles.signatureRow}>
-                    <View
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text>__________________________________</Text>
-                      <Text>Presidente Comisión de Inv 2024</Text>
-                    </View>
-                    <View
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text>_________________________</Text>
-                      <Text>V.B Control Patrimonial</Text>
-                    </View>
-                    <View
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text>__________________</Text>
-                      <Text>Usuario Final</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.footerText}>
-                    <Text style={{ fontSize: "6px", width: "100%" }}>
-                      El usuario declara haber mostrado todos los bienes que se
-                      encuentran bajo responsabilidad...
-                    </Text>
-                    <Text style={{ fontSize: "6px", width: "100%" }}>
-                      El usuario es responsable de la permanencia y conservación
-                      de cada uno de los bienes muebles...
-                    </Text>
-                    <Text style={{ fontSize: "6px", width: "100%" }}>
-                      Cualquier necesidad de traslado del bien mueble dentro o
-                      fuera del local de la entidad...
-                    </Text>
-                  </View>
-                </View>
-              </>
-            )}
-          />
-        ))}
+              </View>
+            </>
+          )}
+        />
+      ))}
       {/* Segundo documento o sección diferente */}
-      {paginatedData.map((pagina, pageIndex) => (
+      {paginatedData2.map((pagina, pageIndex) => (
         <Page size={[841.89, 595.28]} style={styles.page}>
           <View style={{ width: "100%", marginTop: "20px" }}>
             <Text style={{ fontSize: 14, textAlign: "center" }}>
-              FORMATO DE FICHA DE LEVANTAMIENTO DE INFORMACIÓN
+              FICHA DE LEVANTAMIENTO DE INFORMACIÓN
             </Text>
             <Text style={{ fontSize: 14, textAlign: "center" }}>
               INVENTARIO PATRIMONIAL {dayjs().format("YYYY")}
@@ -462,10 +422,14 @@ const CargoPDF = ({ registros }) => {
             style={{ marginTop: 10, display: "flex", flexDirection: "row" }}
           >
             <View style={{ flex: 1 }}>
-              <Text>Autoridad Autonoma de Majes</Text>
+              <Text>AUTORIDAD AUTONOMA DE MAJES</Text>
             </View>
-            <View style={{ flex: 1, alignItems: "flex-start" }}>
+            <View style={{ flex: 1, alignItems: "center" }}>
               <Text>{dayjs().format("DD/MM/YYYY")}</Text>
+            </View>
+
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text>Página: {pageIndex + 1 + "/" + paginatedData2.length}</Text>
             </View>
           </View>
 
@@ -481,7 +445,7 @@ const CargoPDF = ({ registros }) => {
               </View>
             </View>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
-              <Text>PERSONAL INVETARIADOR:</Text>
+              <Text>PERSONAL INVENTARIADOR:</Text>
               <View>
                 <Text>{pagina[0]?.usuario?.inventariadore?.nombre}</Text>
                 <Text>{pagina[0]?.usuario?.jefe?.grupo?.nombre}</Text>
@@ -493,7 +457,7 @@ const CargoPDF = ({ registros }) => {
             style={{ marginTop: 10, display: "flex", flexDirection: "row" }}
           >
             <View style={{ flex: 1 }}>
-              <Text>TIPO DE VERIFICACIÓN: Fisica</Text>
+              <Text>TIPO DE VERIFICACIÓN: FISICA</Text>
             </View>
           </View>
 
@@ -576,7 +540,7 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "12%",
+                      width: "18%",
                       margin: "0",
                       borderRightWidth: "1px",
                     }}
@@ -604,26 +568,10 @@ const CargoPDF = ({ registros }) => {
                     }}
                   >
                     <Text style={{ textAlign: "center", fontSize: "7px" }}>
-                      Modelo
+                      MODELO
                     </Text>
                   </View>
-                  <View
-                    style={{
-                      width: "6%",
-                      height: "25px",
-                      borderRightWidth: "1px",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        fontSize: "7px",
-                        height: "100%",
-                      }}
-                    >
-                      TIPO
-                    </Text>
-                  </View>
+
                   <View
                     style={{
                       width: "6%",
@@ -672,7 +620,7 @@ const CargoPDF = ({ registros }) => {
                         height: "100%",
                       }}
                     >
-                      Detalles
+                      DETALLES
                     </Text>
                   </View>
 
@@ -707,7 +655,7 @@ const CargoPDF = ({ registros }) => {
                         height: "100%",
                       }}
                     >
-                      ESTADO DE CONSERVACIÓN
+                      ESTADO
                     </Text>
                   </View>
                   <View style={{ width: "10%", height: "25px" }}>
@@ -740,7 +688,7 @@ const CargoPDF = ({ registros }) => {
                   }}
                 >
                   <Text style={[styles.tableCell]}>
-                    {pageIndex * registrosPorPagina + index + 1}
+                    {pageIndex * registrosPorPagina2 + index + 1}
                   </Text>
                 </View>
                 <View
@@ -754,7 +702,7 @@ const CargoPDF = ({ registros }) => {
                 </View>
                 <View
                   style={{
-                    width: "12%",
+                    width: "18%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
                   }}
@@ -780,15 +728,6 @@ const CargoPDF = ({ registros }) => {
                   }}
                 >
                   <Text style={[styles.tableCell]}>{registro?.modelo}</Text>
-                </View>
-                <View
-                  style={{
-                    width: "6%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>{registro?.tipo}</Text>
                 </View>
                 <View
                   style={{
@@ -868,7 +807,7 @@ const CargoPDF = ({ registros }) => {
             ))}
           </View>
           <View>
-            <Text>(1) Uso (U), Desuso (D)</Text>
+            <Text>(1) N=Nuevo B=Bueno R=Regular M=Malo X=RAEE Y=Chatarra</Text>
             <Text>
               (2) Es estado es consignado en base a la siguiente escala: Bueno,
               Regular, Malo, Chatarra y RAEE. En caso de semovientes, utilizar

@@ -114,16 +114,39 @@ const Reportes = ({ setTitle }) => {
               </Card>
             </Col>
             <Col span={12}>
-              <Card bordered={false}>
+            <Card bordered={false}>
+                <Statistic
+                  title="Por inventariar"
+                  value={estadisticas?.contador?.faltan}
+                  valueStyle={{ color: "#3f8600" }}
+                />
+              </Card>
+
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+            <Card bordered={false}>
                 <Statistic
                   title="Inventariados"
                   value={estadisticas?.contador?.inventariados}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
+
+            </Col>
+            <Col span={12}>
+            <Card bordered={false}>
+                <Statistic
+                  title="Activos"
+                  value={estadisticas?.contador?.activos}
+                  valueStyle={{ color: "#3f8600" }}
+                />
+              </Card>
+
             </Col>
           </Row>
-
           <Row gutter={16}>
             <Col span={12}>
               <Card bordered={false}>
@@ -137,7 +160,7 @@ const Reportes = ({ setTitle }) => {
             <Col span={12}>
               <Card bordered={false}>
                 <Statistic
-                  title="Por inventariar"
+                  title="Faltantes"
                   value={estadisticas?.contador?.faltantes}
                   valueStyle={{ color: "#3f8600" }}
                 />

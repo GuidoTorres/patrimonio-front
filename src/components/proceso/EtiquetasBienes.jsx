@@ -19,6 +19,7 @@ const EtiquetasBienes = ({ setTitle }) => {
   const [data, setData] = useState([]);
   const [dependencias, setDependencias] = useState([]);
   const [selectedSede, setSelectedSede] = useState(null);
+  const [selectedBarras, setSelectedBarras] = useState([]); // Estado para almacenar los valores de CodigoBarras
   const [ids, setIds] = useState({
     sedeId: null,
     dependenciaId: null,
@@ -93,7 +94,7 @@ const EtiquetasBienes = ({ setTitle }) => {
   const handleUbicacionChange = (ubicacionId) => {
     setIds((value) => ({ ...value, ubicacionId: ubicacionId }));
 
-    getEtiquetas();
+    getEtiquetas(ubicacionId);
   };
 
   useEffect(() => {
@@ -102,7 +103,7 @@ const EtiquetasBienes = ({ setTitle }) => {
     }
   }, [dni]);
 
-  const getEtiquetas = async () => {
+  const getEtiquetas = async (ubicacion) => {
     let url = `${process.env.REACT_APP_BASE}/bienes/etiquetas?`; // URL base
 
     if (dni) {
@@ -114,8 +115,8 @@ const EtiquetasBienes = ({ setTitle }) => {
     if (ids.dependenciaId) {
       url += `dependenciaId=${ids.dependenciaId}&`;
     }
-    if (ids.ubicacionId) {
-      url += `ubicacionId=${ids.ubicacionId}&`;
+    if (ubicacion) {
+      url += `ubicacionId=${ubicacion}&`;
     }
 
     // Eliminar el último `&` si existe
@@ -135,16 +136,23 @@ const EtiquetasBienes = ({ setTitle }) => {
     content: () => barcodeRef.current,
   });
 
-  const handleBarcodePrint = () => {
-    setPrintTrigger(true);
+  const handleBarcodePrint = (item) => {
+    console.log(item);
+    setSelectedBarras([item]); // Pasar solo el valor del item a CodigoBarras
+    setPrintTrigger(true) // Ejecutar la impresión
   };
 
+  // Imprimir todos los registros
+  const handlePrintAll = () => {
+    setSelectedBarras(etiquetas); // Pasar todos los valores a CodigoBarras
+    setPrintTrigger(true) // Ejecutar la impresión
+  };
   useEffect(() => {
     if (printTrigger) {
-      handlePrint();
-      setPrintTrigger(false);
+      handlePrint(); // Ejecutamos la impresión solo cuando el trigger es true
+      setPrintTrigger(false); // Reiniciamos el trigger después de imprimir
     }
-  }, [printTrigger]);
+  }, [printTrigger, selectedBarras]); 
 
   const limpiarFiltros = () => {
     setSedes([]);
@@ -196,10 +204,14 @@ const EtiquetasBienes = ({ setTitle }) => {
     },
     {
       title: "ACCIONES",
-      render: (_, record) => <Button>Imprimir</Button>,
+      render: (_, record) => (
+        <Button onClick={() => handleBarcodePrint(record)}>Imprimir</Button>
+      ),
       align: "center",
     },
   ];
+
+
   return (
     <>
       <style>
@@ -314,7 +326,7 @@ const EtiquetasBienes = ({ setTitle }) => {
           allowClear
           options={selectedUbicacion?.map((item) => {
             return {
-              value: item?.tipo_ubicac + "" + item?.ubicac_fisica,
+              value: item?.id,
               label: item?.nombre,
             };
           })}
@@ -331,7 +343,7 @@ const EtiquetasBienes = ({ setTitle }) => {
           <Flex justify="end" align="center">
             <Button
               style={{ backgroundColor: "#4DA362", color: "white" }}
-              onClick={() => handleBarcodePrint()}
+              onClick={() => handlePrintAll()}
             >
               Imprimir Etiquetas
             </Button>
@@ -348,8 +360,10 @@ const EtiquetasBienes = ({ setTitle }) => {
           backgroundColor: "white",
         }}
       >
-        <div ref={barcodeRef} className="barcode-print">
-          <CodigoBarras values={etiquetas} className="etiqueta" />
+        <div ref={barcodeRef} 
+        className="barcode-print"
+        >
+          <CodigoBarras values={selectedBarras} className="etiqueta" />
         </div>
         <div style={{ padding: "15px" }}>
           <Table

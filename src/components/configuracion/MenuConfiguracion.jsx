@@ -4,7 +4,7 @@ import {
   ProfileOutlined,
   SearchOutlined,
   BarChartOutlined,
-  UserOutlined,
+  UserOutlined,UserSwitchOutlined, UsergroupAddOutlined
 } from "@ant-design/icons";
 const MenuConfiguracion = ({ setTitle }) => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const MenuConfiguracion = ({ setTitle }) => {
             alignItems: "center",
           }}
         >
-          <BarChartOutlined style={{ fontSize: "80px" }} />
+          <UserSwitchOutlined style={{ fontSize: "80px" }}  />
         </div>
         <p htmlFor="" style={{ marginTop: "10px", fontSize: "15px" }}>
           {" "}
@@ -84,7 +84,7 @@ const MenuConfiguracion = ({ setTitle }) => {
             alignItems: "center",
           }}
         >
-          <BarChartOutlined style={{ fontSize: "80px" }} />
+          <UsergroupAddOutlined style={{ fontSize: "80px" }}/>
         </div>
         <p htmlFor="" style={{ marginTop: "10px", fontSize: "15px" }}>
           {" "}

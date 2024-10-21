@@ -116,7 +116,7 @@ const ModalEditarBien = ({ modal, setModal, setEdit, edit, getBienes }) => {
     formData.append("fecha_registro", dayjs().format("DD/MM/YYYY"));
     formData.append("usuario_id", usuario || null);
     formData.append("sbn", values.sbn || "");
-    formData.append("observacion", values.observacion || null)
+    formData.append("observacion", values.observacion || "")
     if (storedTrabajador) {
       trabajador = JSON.parse(storedTrabajador);
       formData.append("trabajador_id", trabajador.id || null);

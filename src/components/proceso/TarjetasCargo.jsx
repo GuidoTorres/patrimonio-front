@@ -100,8 +100,9 @@ const TarjetasCargo = ({ setTitle }) => {
   const handleUbicacionChange = (ubicacionId) => {
     setIds((value) => ({ ...value, ubicacionId: ubicacionId }));
 
-    getEtiquetas();
+    getEtiquetas(ubicacionId);
   };
+  console.log(ids);
 
   useEffect(() => {
     if (dni?.length === 8) {
@@ -109,7 +110,7 @@ const TarjetasCargo = ({ setTitle }) => {
     }
   }, [dni]);
 
-  const getEtiquetas = async () => {
+  const getEtiquetas = async (ubicacion) => {
     let url = `${process.env.REACT_APP_BASE}/bienes/etiquetas?`; // URL base
 
     if (dni) {
@@ -121,8 +122,8 @@ const TarjetasCargo = ({ setTitle }) => {
     if (ids.dependenciaId) {
       url += `dependenciaId=${ids.dependenciaId}&`;
     }
-    if (ids.ubicacionId) {
-      url += `ubicacionId=${ids.ubicacionId}&`;
+    if (ubicacion) {
+      url += `ubicacionId=${ubicacion}&`;
     }
 
     // Eliminar el último `&` si existe
@@ -244,7 +245,7 @@ const TarjetasCargo = ({ setTitle }) => {
           allowClear
           options={selectedUbicacion?.map((item) => {
             return {
-              value: item?.tipo_ubicac + "" + item?.ubicac_fisica,
+              value: item?.id,
               label: item?.nombre,
             };
           })}

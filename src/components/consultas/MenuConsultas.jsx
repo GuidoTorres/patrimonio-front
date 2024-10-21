@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   ProfileOutlined,
   SearchOutlined,
-  BarChartOutlined,
+  BarChartOutlined,SnippetsOutlined
 } from "@ant-design/icons";
 
 const MenuConsultas = ({ setTitle }) => {
@@ -85,7 +85,7 @@ const MenuConsultas = ({ setTitle }) => {
             alignItems: "center",
           }}
         >
-          <BarChartOutlined style={{ fontSize: "80px" }} />
+          <SnippetsOutlined style={{ fontSize: "80px" }}/>
         </div>
         <p htmlFor="" style={{ marginTop: "10px", fontSize: "15px" }}>
           {" "}

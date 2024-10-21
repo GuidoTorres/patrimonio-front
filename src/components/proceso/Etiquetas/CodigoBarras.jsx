@@ -71,15 +71,15 @@ const CodigoBarras = ({ values }) => {
             </div>
           </div>
 
-          <Flex justify="space-between" align="center">
+          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
             <div
               style={{
                 transform: "rotate(-90deg)",
                 fontSize: "6px",
                 marginLeft: "-4px",
-                paddingLeft: "5px",
-                width: "40px",
-                textAlign:"left"
+                width: "10%",
+                flex: 1
+                
               }}
             >
               <strong>
@@ -90,28 +90,19 @@ const CodigoBarras = ({ values }) => {
                 </label>
               </strong>
             </div>
+            <div style={{flex:10}}>
 
             <Barcode
               value={value.sbn}
-              width={1.28}
+              width={1.30}
               height={20}
               fontSize={12}
               marginTop={5}
               marginBottom={5}
-            />
+              />
+              </div>
 
-            <div>
-              <p
-                style={{
-                  transform: "rotate(-90deg)",
-                  fontSize: "7px",
-                  paddingRight: "5px",
-                }}
-              >
-                <strong>{value.secuencia}</strong>
-              </p>
-            </div>
-          </Flex>
+          </div>
           <p
             style={{
               overflow: "hidden",

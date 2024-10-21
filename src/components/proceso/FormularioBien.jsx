@@ -259,7 +259,7 @@ const FormularioBien = ({
     formData.append("usuario_id", usuario || null);
     formData.append("sbn", values.sbn || "");
     formData.append("tipo", sobrante ? "sobrante" : "activo");
-    formData.append("observacion", values.observacion || null)
+    formData.append("observacion", values.observacion || "")
 
     if (storedTrabajador) {
       trabajador = JSON.parse(storedTrabajador);
