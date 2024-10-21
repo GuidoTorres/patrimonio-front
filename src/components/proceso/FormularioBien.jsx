@@ -652,6 +652,7 @@ const FormularioBien = ({
                       src={imageUrl}
                       alt="imagen"
                       style={{ width: "100%" }}
+                      preview={false}
                     />
                   ) : (
                     <>
