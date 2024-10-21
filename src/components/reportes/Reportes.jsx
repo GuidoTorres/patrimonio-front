@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { Row, Col, Card, Statistic, Tabs, Typography, Flex } from "antd";
 import Grafico from "./Grafico";
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 
 const socket = io("http://localhost:3006"); // Conectar a Socket.IO
 
@@ -48,53 +47,54 @@ const Reportes = ({ setTitle }) => {
     getEstadisticas();
   }, []);
   const getEstadisticas = async () => {
-    try {
-      // Usar Promise.all para ejecutar las consultas en paralelo
-      const [responseTipo, responseUso, responseSede, responseEstado,responseContador] =
-        await Promise.all([
-          fetch(`${process.env.REACT_APP_BASE}/estadisticas/tipo`),
-          fetch(`${process.env.REACT_APP_BASE}/estadisticas/uso`),
-          fetch(`${process.env.REACT_APP_BASE}/estadisticas/sede`),
-          fetch(`${process.env.REACT_APP_BASE}/estadisticas/estado`),
-          fetch(`${process.env.REACT_APP_BASE}/bienes/estadisticas`),
-        ]);
+    // Usar Promise.all para ejecutar las consultas en paralelo
+    const [
+      responseTipo,
+      responseUso,
+      responseSede,
+      responseEstado,
+      responseContador,
+    ] = await Promise.all([
+      fetch(`${process.env.REACT_APP_BASE}/estadisticas/tipo`),
+      fetch(`${process.env.REACT_APP_BASE}/estadisticas/uso`),
+      fetch(`${process.env.REACT_APP_BASE}/estadisticas/sede`),
+      fetch(`${process.env.REACT_APP_BASE}/estadisticas/estado`),
+      fetch(`${process.env.REACT_APP_BASE}/bienes/estadisticas`),
+    ]);
 
-      // Asegurarse de que todas las respuestas sean exitosas
-      if (
-        !responseTipo.ok ||
-        !responseUso.ok ||
-        !responseSede.ok ||
-        !responseEstado.ok ||
-        !responseContador.ok
-      ) {
-        throw new Error("Error fetching one or more of the statistics data");
-      }
+    // Asegurarse de que todas las respuestas sean exitosas
+    if (
+      !responseTipo.ok ||
+      !responseUso.ok ||
+      !responseSede.ok ||
+      !responseEstado.ok ||
+      !responseContador.ok
+    ) {
+      throw new Error("Error fetching one or more of the statistics data");
+    }
 
-      // Parsear las respuestas a JSON
-      const [dataTipo, dataUso, dataSede, dataEstado, contadores] = await Promise.all([
+    // Parsear las respuestas a JSON
+    const [dataTipo, dataUso, dataSede, dataEstado, contadores] =
+      await Promise.all([
         responseTipo.json(),
         responseUso.json(),
         responseSede.json(),
         responseEstado.json(),
-        responseContador.json()
+        responseContador.json(),
       ]);
 
-      // Combinar toda la información o devolverla por separado
-      const data = {
-        tipo: dataTipo,
-        uso: dataUso,
-        sede: dataSede,
-        estado: dataEstado,
-        contador: contadores
-      };
+    // Combinar toda la información o devolverla por separado
+    const data = {
+      tipo: dataTipo,
+      uso: dataUso,
+      sede: dataSede,
+      estado: dataEstado,
+      contador: contadores,
+    };
 
-      setEstadisticas(data);
+    setEstadisticas(data);
 
-      // Puedes retornar esta información para usarla en tu aplicación
-    } catch (error) {
-      console.error("Error fetching statistics:", error);
-      throw new Error("Error fetching statistics data");
-    }
+    // Puedes retornar esta información para usarla en tu aplicación
   };
 
   const items = [
@@ -203,7 +203,11 @@ const Reportes = ({ setTitle }) => {
       children: (
         <Row gutter={16}>
           {bienes?.map((item) => (
-            <Col span={12} key={item?.usuario?.id} style={{marginTop:"10px"}}>
+            <Col
+              span={12}
+              key={item?.usuario?.id}
+              style={{ marginTop: "10px" }}
+            >
               <Card bordered={false}>
                 <Statistic
                   title={`Bienes Inventariados por - ${item?.usuario?.nombre_usuario}`}

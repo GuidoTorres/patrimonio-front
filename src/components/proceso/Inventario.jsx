@@ -29,6 +29,7 @@ const Inventario = ({ setTitle }) => {
   const [trabajadores, setTrabajadores] = useState([]);
   const [filteredTrabajador, setFilteredTrabajador] = useState(null);
   const [sbnSobrante, setSbnSobrante] = useState(null);
+  const [mostrarBoton, setMostrarBoton] = useState(false);
   useEffect(() => {
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
@@ -91,43 +92,38 @@ const Inventario = ({ setTitle }) => {
   // Función para obtener los bienes
   const getBienes = async () => {
     // Si el usuario presiona "Enter" o la longitud del input es de 12 caracteres
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${buscar}`
-      );
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${buscar}`
+    );
 
-      if (response.ok) {
-        const info = await response.json(); // Obtener los datos
+    if (response.ok) {
+      const info = await response.json(); // Obtener los datos
 
-        // Si no hay bienes en la respuesta, entonces es sobrante
-        if (!info.info) {
-          setIsSobrante(true);
-          setBienes(null);
-        } else {
-          if (info.info.tipo === "sobrante") {
-            setIsSobrante(true);
-          } else {
-            setIsSobrante(false);
-          }
-          setBienes(info.info); // Guardar los bienes en el estado si se encuentran
-        }
+      // Si no hay bienes en la respuesta, entonces es sobrante
+      if (!info.info) {
+        setIsSobrante(true);
+        setBienes(null);
       } else {
-        const info = await response.json(); // Obtener el mensaje de error
-        if (response.status === 403) {
-          message.warning(info.msg);
-        } else if (response.status === 404) {
-          // Aquí lo tratamos como un sobrante
+        if (info.info.tipo === "sobrante") {
           setIsSobrante(true);
-          setBienes(null);
-          message.warning("El bien no fue encontrado, es un sobrante.");
         } else {
           setIsSobrante(false);
-          message.error("Hubo un error al buscar el bien.");
         }
+        setBienes(info.info); // Guardar los bienes en el estado si se encuentran
       }
-    } catch (error) {
-      message.error("Hubo un error al realizar la búsqueda.");
-      console.error(error);
+    } else {
+      const info = await response.json(); // Obtener el mensaje de error
+      if (response.status === 403) {
+        message.warning(info.msg);
+      } else if (response.status === 404) {
+        // Aquí lo tratamos como un sobrante
+        setIsSobrante(true);
+        setBienes(null);
+        message.warning("El bien no fue encontrado, es un sobrante.");
+      } else {
+        setIsSobrante(false);
+        setMostrarBoton(true);
+      }
     }
   };
 
@@ -235,7 +231,7 @@ const Inventario = ({ setTitle }) => {
     const sede = localStorage.getItem("sede_id"); // Guardar en localStorage
     const ubicacion = localStorage.getItem("ubicacion_id");
     const usuario = localStorage.getItem("usuario");
-    const dependencia = localStorage.getItem("dependencia_id")
+    const dependencia = localStorage.getItem("dependencia_id");
     const trabajador = localStorage.getItem("trabajador_id"); // Eliminar del localStorage
 
     console.log(sede);
@@ -433,7 +429,13 @@ const Inventario = ({ setTitle }) => {
           <Search
             placeholder="Buscar Bien"
             style={{ width: "250px" }}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              if (e) {
+                handleInputChange(e);
+              } else {
+                setMostrarBoton(false);
+              }
+            }}
             allowClear
             ref={searchInputRef}
             value={buscar}
@@ -480,13 +482,14 @@ const Inventario = ({ setTitle }) => {
         >
           Limpiar Filtros
         </Button>
-
-        <Button
-          onClick={registrarSobrante}
-          style={{ backgroundColor: "#4DA362", color: "white" }}
-        >
-          Registrar Sobrante
-        </Button>
+        {mostrarBoton && (
+          <Button
+            onClick={registrarSobrante}
+            style={{ backgroundColor: "#4DA362", color: "white" }}
+          >
+            Registrar Sobrante
+          </Button>
+        )}
       </Flex>
 
       <Flex justify="flex-start" className="inventario-content" gap={"10px"}>
@@ -507,7 +510,6 @@ const Inventario = ({ setTitle }) => {
               searchInputRef={searchInputRef}
               sbnSobrante={sbnSobrante}
               setIsSobrante={setIsSobrante}
-              
             />
           </div>
         ) : bienes !== null ? (
@@ -523,7 +525,6 @@ const Inventario = ({ setTitle }) => {
             searchInputRef={searchInputRef}
             sbnSobrante={sbnSobrante}
             setIsSobrante={setIsSobrante}
-
           />
         ) : null}
       </Flex>
