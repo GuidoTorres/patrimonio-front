@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-// const expressApp = require("./server");
+const expressApp = require("./server");
 
 let mainWindow;
 let isOnline; // Definir isOnline globalmente
@@ -47,14 +47,13 @@ app.whenReady().then(async () => {
   // Crear la ventana principal
   createWindow();
 
-  // Iniciar el servidor Express en el puerto 3006
-  // try {
-  //   expressApp.listen(3006, () => {
-  //     console.log("Servidor Express corriendo en el puerto 3006");
-  //   });
-  // } catch (error) {
-  //   console.error("Error al iniciar el servidor Express:", error);
-  // }
+  try {
+    expressApp.listen(3006, () => {
+      console.log("Servidor Express corriendo en el puerto 3006");
+    });
+  } catch (error) {
+    console.error("Error al iniciar el servidor Express:", error);
+  }
 
   // Manejar la reactivación en macOS
   app.on("activate", () => {
