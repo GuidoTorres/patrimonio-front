@@ -157,7 +157,7 @@ const ModalEditarBien = ({ modal, setModal, setEdit, edit, getBienes }) => {
       trabajador = JSON.parse(storedTrabajador);
     }
 
-    setNombreTrabajador(trabajador.nombre);
+    setNombreTrabajador(trabajador?.nombre);
   }, [nombreTrabajador]);
 
   return (
