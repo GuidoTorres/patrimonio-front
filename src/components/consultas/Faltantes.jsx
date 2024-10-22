@@ -131,8 +131,8 @@ const Faltantes = ({ setTitle }) => {
       {
         key: "2",
         label: "Observaciones",
-        children: record.observaciones
-          ? record.observaciones
+        children: record.observacion
+          ? record.observacion
           : "SIN OBSERVACIONES",
       },
       {
@@ -323,12 +323,12 @@ const Faltantes = ({ setTitle }) => {
               {" "}
               Limpiar Busqueda
             </Button>
-            <Button
+            {/* <Button
               style={{ backgroundColor: "#4DA362", color: "white" }}
               onClick={registrarFaltantes}
             >
               Registrar Faltantes
-            </Button>
+            </Button> */}
           </Flex>
         </Flex>
       </div>

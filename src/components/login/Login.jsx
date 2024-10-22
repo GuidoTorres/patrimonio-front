@@ -35,9 +35,11 @@ const Login = ({  }) => {
         message: confirm.msg,
       });
       setIsLogged(true);
+      const permisos = confirm?.data?.permisos?.map(item => item.nombre)
       localStorage.setItem("token", confirm.tokenSession)
       localStorage.setItem("data", confirm.data)
       localStorage.setItem("usuario", confirm?.data?.id)
+      localStorage.setItem("permisos", permisos)
       console.log(confirm.data);
       // window.electron.saveToken(confirm.tokenSession);
       // window.electron.saveData(confirm.data)

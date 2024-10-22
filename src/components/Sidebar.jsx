@@ -14,19 +14,28 @@ import { useNavigate, useLocation } from "react-router-dom";
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-//prueba
-  // Usar un string que corresponda a la 'key' del ítem del menú
+
   const [selectedKey, setSelectedKey] = useState("");
+  const [permisos, setPermisos] = useState([]);
+
+  // Obtener permisos de localStorage
+  useEffect(() => {
+    const permisosGuardados = localStorage.getItem("permisos");
+    if (permisosGuardados) {
+      // Convertir la cadena en un array
+      setPermisos(permisosGuardados.split(","));
+    }
+  }, []);
 
   // Actualizar la clave seleccionada en función de la ruta actual
   useEffect(() => {
     const path = location.pathname;
     setSelectedKey(path);
   }, [location]);
+
   useEffect(() => {
     const path = location.pathname;
 
-    // Verificar si la ruta actual pertenece a una sección específica
     if (path.startsWith("/inventario")) {
       setSelectedKey("/inventario");
     } else if (path.startsWith("/consulta")) {
@@ -41,19 +50,49 @@ const Sidebar = () => {
   }, [location]);
 
   const handleMenuClick = (e) => {
-    // Maneja la selección del menú aquí
     const key = e.key;
 
-    // Si tienes varias rutas que deberían seleccionar el mismo ítem
     if (key === "/equipos" || key === "/actualizar/equipos") {
       setSelectedKey("/menu/equipos");
     } else {
       setSelectedKey(key);
     }
 
-    // Navega a la ruta seleccionada
     navigate(key);
   };
+
+  // Items del menú con filtrado basado en permisos
+  const menuItems = [
+    {
+      key: "/inventario",
+      icon: <SettingOutlined />,
+      label: "Inventario",
+      permiso: "inventario",
+    },
+    {
+      key: "/consulta",
+      icon: <SearchOutlined />,
+      label: "Consultas",
+      permiso: "consultas",
+    },
+    {
+      key: "/configuracion",
+      icon: <ToolOutlined />,
+      label: "Configuración",
+      permiso: "configuracion",
+    },
+    {
+      key: "/reportes",
+      icon: <AreaChartOutlined />,
+      label: "Reportes",
+      permiso: "reportes",
+    },
+  ];
+
+  // Filtrar los items según los permisos
+  const filteredMenuItems = menuItems.filter(item =>
+    permisos.includes(item.permiso)
+  );
 
   return (
     <>
@@ -67,21 +106,7 @@ const Sidebar = () => {
         mode="inline"
         selectedKeys={[selectedKey]}
         className="menu-bar"
-        items={[
-          {
-            key: "/inventario",
-            icon: <SettingOutlined />,
-            label: "Inventario",
-          },
-          { key: "/consulta", icon: <SearchOutlined />, label: "Consultas" },
-          {
-            key: "/configuracion",
-            icon: <ToolOutlined />,
-            label: "Configuración",
-          },
-          { key: "/reportes", icon: <AreaChartOutlined />, label: "Reportes" },
-          // { key: "/sistema", icon: <AreaChartOutlined />, label: "Sistema" },
-        ]}
+        items={filteredMenuItems}
         onClick={handleMenuClick}
       />
     </>
