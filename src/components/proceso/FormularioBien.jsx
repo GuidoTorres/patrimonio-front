@@ -449,8 +449,8 @@ const FormularioBien = ({
                   disabled={data?.estado === "2"}
                   options={colores?.map((item) => {
                     return {
-                      value: item.DESCRIPCION,
-                      label: item.DESCRIPCION,
+                      value: item.NOMBRE,
+                      label: item.NOMBRE,
                     };
                   })}
                 />
