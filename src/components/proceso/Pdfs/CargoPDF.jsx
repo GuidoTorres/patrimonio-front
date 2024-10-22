@@ -124,7 +124,7 @@ const CargoPDF = ({ registros }) => {
   );
   return (
     <Document>
-      {paginatedData1.filter(item => item.estado == "1").map((pagina, pageIndex) => (
+      {paginatedData1.map((pagina, pageIndex) => (
         <Page
           size="A4"
           style={styles.page}
