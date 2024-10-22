@@ -429,7 +429,7 @@ const Inventario = ({ setTitle }) => {
             style={{ width: "250px" }}
             onChange={(e) => {
               if (e) {
-                handleInputChange(e?.trim());
+                handleInputChange(e);
               } else {
                 setMostrarBoton(false);
               }
