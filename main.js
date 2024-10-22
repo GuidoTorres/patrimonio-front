@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const expressApp = require("./server");
-
+const { exec } = require('child_process'); 
+// const expressApp = require("./server");
+// require('dotenv').config({ path: path.join(__dirname, '.env') });
 let mainWindow;
 let isOnline; // Definir isOnline globalmente
 
@@ -28,6 +29,7 @@ async function loadModules() {
   const isOnlineModule = await import("is-online");
   isOnline = isOnlineModule.default;
 }
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 // Verificar conexión a internet
 async function checkOnlineStatus() {
@@ -38,7 +40,25 @@ async function checkOnlineStatus() {
     console.log("No hay conexión a internet");
   }
 }
+// Función para iniciar el servidor como un Child Process
+function startServer() {
+  const serverProcess = exec('node server.js', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error al iniciar el servidor: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+  });
 
+  // Detectar si el proceso del servidor se cierra
+  serverProcess.on('close', (code) => {
+    console.log(`Proceso del servidor finalizado con código ${code}`);
+  });
+}
 app.whenReady().then(async () => {
   // No es necesario usar spawn, ya que el servidor se inicia directamente en 'server/index.js'
   await loadModules();
@@ -47,13 +67,13 @@ app.whenReady().then(async () => {
   // Crear la ventana principal
   createWindow();
 
-  try {
-    expressApp.listen(3006, () => {
-      console.log("Servidor Express corriendo en el puerto 3006");
-    });
-  } catch (error) {
-    console.error("Error al iniciar el servidor Express:", error);
-  }
+  // try {
+  //   expressApp.listen(3007, () => {
+  //     console.log("Servidor Express corriendo en el puerto 3006");
+  //   });
+  // } catch (error) {
+  //   console.error("Error al iniciar el servidor Express:", error);
+  // }
 
   // Manejar la reactivación en macOS
   app.on("activate", () => {

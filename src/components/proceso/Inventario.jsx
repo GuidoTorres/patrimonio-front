@@ -248,10 +248,8 @@ const Inventario = ({ setTitle }) => {
       setIsSobrante(true);
       const ubi = ubicaciones.filter((item) => item.id == ubicacion);
       const response = await fetch(
-        `${
-          process.env.REACT_APP_BASE
-        }/bienes/sobrante/sbn?id_usuario=${usuario}&id_sede=${sede}&id_ubicacion=${
-          ubi?.at(-1).tipo_ubicac + "" + ubi?.at(-1).ubicac_fisica
+        `${process.env.REACT_APP_BASE
+        }/bienes/sobrante/sbn?id_usuario=${usuario}&id_sede=${sede}&id_ubicacion=${ubi?.at(-1).tipo_ubicac + "" + ubi?.at(-1).ubicac_fisica
         }`
       );
       if (response.ok) {
@@ -431,7 +429,7 @@ const Inventario = ({ setTitle }) => {
             style={{ width: "250px" }}
             onChange={(e) => {
               if (e) {
-                handleInputChange(e);
+                handleInputChange(e?.trim());
               } else {
                 setMostrarBoton(false);
               }
@@ -494,7 +492,7 @@ const Inventario = ({ setTitle }) => {
 
       <Flex justify="flex-start" className="inventario-content" gap={"10px"}>
         {Array.isArray(bienes) && bienes.length === 0 ? null : bienes === // No mostrar nada si bienes es un array vacío
-            null && isSobrante ? (
+          null && isSobrante ? (
           // Mostrar el formulario para bienes sobrantes
           <div
             style={{ width: "100%", height: "100%", backgroundColor: "white" }}

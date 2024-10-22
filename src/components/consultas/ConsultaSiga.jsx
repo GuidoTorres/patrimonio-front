@@ -242,7 +242,7 @@ const ConsultaSiga = ({ setTitle }) => {
             }}
             allowClear
             value={usuario || undefined}
-            onChange={(e) => setUsuario(e.target.value)}
+            onChange={(e) => setUsuario(e.target.value?.trim())}
           />
 
         </Flex>
@@ -263,7 +263,7 @@ const ConsultaSiga = ({ setTitle }) => {
                 width: "50%",
               }}
               allowClear
-              onChange={(e) => setCodigoSBN(e.target.value)}
+              onChange={(e) => setCodigoSBN(e.target.value?.trim())}
               value={codigoSBN || undefined}
             />
             <Input
@@ -272,11 +272,11 @@ const ConsultaSiga = ({ setTitle }) => {
                 width: "50%",
               }}
               allowClear
-              onChange={(e) => setSerie(e.target.value)}
+              onChange={(e) => setSerie(e.target.value?.trim())}
               value={serie || undefined}
             />
 
-            {bienes.length > 0 ? (
+            {bienes?.length > 0 ? (
               <Tag
                 style={{
                   fontSize: "15px",

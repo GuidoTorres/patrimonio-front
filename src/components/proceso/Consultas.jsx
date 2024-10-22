@@ -324,7 +324,7 @@ const Consultas = ({ setTitle }) => {
               }}
               name="sbn"
               value={filters.sbn}
-              onChange={(e) => handleInputChange("sbn", e.target.value)}
+              onChange={(e) => handleInputChange("sbn", e.target.value?.trim())}
             />
             <Input
               placeholder="Serie"
@@ -333,10 +333,10 @@ const Consultas = ({ setTitle }) => {
               }}
               name="serie"
               value={filters.serie}
-              onChange={(e) => handleInputChange("serie", e.target.value)}
+              onChange={(e) => handleInputChange("serie", e.target.value?.trim())}
             />
           </Flex>
-          {bienes.length > 0 ? (
+          {bienes?.length > 0 ? (
             <Tag
               style={{
                 fontSize: "15px",
