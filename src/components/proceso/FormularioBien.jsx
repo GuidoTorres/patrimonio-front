@@ -178,9 +178,7 @@ const FormularioBien = ({
     }
   };
 
-  console.log(marcas);
-  
-  
+   
   const getDependencias = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/dependencias`);
 
