@@ -25,10 +25,9 @@
     "@react-pdf/renderer": "^4.0.0"
   },
   "scripts": {
-    "start": "concurrently \"npm run react-start\" \"npm run electron\" \"npm run server\"",
+    "start": "concurrently \"npm run react-start\" \"npm run electron\"",
     "react-start": "react-scripts start",
     "electron": "wait-on http://localhost:3000 && electron .",
-    "server": "node ./server/server.js",
     "build": "react-scripts build",
     "dist": "electron-builder --win"
   },
