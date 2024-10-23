@@ -184,7 +184,7 @@ const Consultas = ({ setTitle }) => {
         children:
           record?.ubicacione?.tipo_ubicac +
           "" +
-          record?.ubicacione?.ubicac_fisica,
+          record?.ubicacione?.ubicac_fisica +"-"+  record?.ubicacione?.nombre,
       },
       {
         key: "4",

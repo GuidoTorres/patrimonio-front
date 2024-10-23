@@ -10,6 +10,7 @@ function createWindow() {
     width: 1200,
     height: 900,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: false,
       contextIsolation: true,
     },
@@ -18,7 +19,7 @@ function createWindow() {
   const startUrl = process.env.ELECTRON_START_URL || `file://${path.join(__dirname, 'index.html')}`;
 
   console.log(startUrl);
-  
+
   if (process.env.ELECTRON_START_URL) {
     // En desarrollo, cargar la URL del servidor de React
     mainWindow.loadURL(process.env.ELECTRON_START_URL);
