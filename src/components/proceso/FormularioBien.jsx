@@ -172,9 +172,15 @@ const FormularioBien = ({
 
     if (response.ok) {
       const info = await response.json();
+      console.log(info);
+      
       setColores(info.data); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
+
+  console.log(marcas);
+  
+  
   const getDependencias = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/dependencias`);
 
@@ -293,7 +299,7 @@ const FormularioBien = ({
       });
     }
   };
-
+  
   useEffect(() => {
     const storedTrabajador = localStorage.getItem("trabajador_id");
 

@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const url = require('url');
 
 let mainWindow;
 let isOnline;
@@ -14,8 +15,10 @@ function createWindow() {
     },
   });
 
-  const startUrl = process.env.ELECTRON_START_URL || `file://${path.join(__dirname, 'build', 'index.html')}`;
+  const startUrl = process.env.ELECTRON_START_URL || `file://${path.join(__dirname, 'index.html')}`;
 
+  console.log(startUrl);
+  
   if (process.env.ELECTRON_START_URL) {
     // En desarrollo, cargar la URL del servidor de React
     mainWindow.loadURL(process.env.ELECTRON_START_URL);
