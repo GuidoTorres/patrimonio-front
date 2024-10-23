@@ -1,4 +1,4 @@
-import { Flex, Select, Button, Input, Table, Descriptions, Tag } from "antd";
+import { Flex, Select, Button, Input, Table, Descriptions, Tag, notification, message } from "antd";
 import React, { useEffect, useState } from "react";
 
 const ConsultaSiga = ({ setTitle }) => {
@@ -107,11 +107,13 @@ const ConsultaSiga = ({ setTitle }) => {
     if (serie) queryParams.append("serie", serie);
 
     const response = await fetch(
-      `http://10.30.1.42:8084/api/v1/bienes?${queryParams.toString()}`
+      `http://localhost:3006/api/v1/bienes?${queryParams.toString()}`
     );
+    const data = await response.json();
     if (response.ok) {
-      const data = await response.json();
       setBienes(data.data);
+    }else{
+      message.error(data.msg)
     }
   };
   const LimpiarBusqueda = async () => {

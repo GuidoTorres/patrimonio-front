@@ -116,7 +116,7 @@ const Reportes = ({ setTitle }) => {
             <Col span={12}>
             <Card bordered={false}>
                 <Statistic
-                  title="Por inventariar"
+                  title="Faltantes"
                   value={estadisticas?.contador?.faltan}
                   valueStyle={{ color: "#3f8600" }}
                 />
@@ -157,15 +157,7 @@ const Reportes = ({ setTitle }) => {
                 />
               </Card>
             </Col>
-            <Col span={12}>
-              <Card bordered={false}>
-                <Statistic
-                  title="Faltantes"
-                  value={estadisticas?.contador?.faltantes}
-                  valueStyle={{ color: "#3f8600" }}
-                />
-              </Card>
-            </Col>
+
           </Row>
         </Flex>
       ),
