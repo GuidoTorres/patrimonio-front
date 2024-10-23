@@ -2,9 +2,11 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isOnline = require('is-online');
 const Store = require('electron-store');
+const { spawn } = require('child_process'); // Importar spawn de child_process
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 let mainWindow;
+let serverProcess;
 
 // Función para crear la ventana de la aplicación
 function createWindow() {
@@ -40,14 +42,25 @@ async function checkOnlineStatus() {
   }
 }
 
-// Iniciar el servidor Express
-function startExpressServer() {
-  try {
-    require('./server/server'); // Ajusta la ruta según tu estructura
+// Iniciar el servidor Express como proceso hijo
+function startServer() {
+  serverProcess = spawn('node', ['server/index.js'], {
+    cwd: path.join(__dirname),
+    env: process.env,
+    shell: true
+  });
 
-  } catch (error) {
-    console.error('Error al iniciar el servidor Express:', error);
-  }
+  serverProcess.stdout.on('data', (data) => {
+    console.log(`Servidor: ${data}`);
+  });
+
+  serverProcess.stderr.on('data', (data) => {
+    console.error(`Error del servidor: ${data}`);
+  });
+
+  serverProcess.on('close', (code) => {
+    console.log(`El proceso del servidor finalizó con el código ${code}`);
+  });
 }
 
 app.whenReady().then(async () => {
@@ -55,8 +68,8 @@ app.whenReady().then(async () => {
 
   await checkOnlineStatus();
 
-  // Inicia el servidor Express
-  startExpressServer();
+  // Inicia el servidor Express como proceso hijo
+  startServer();
 
   // Crea la ventana principal
   createWindow();
@@ -70,25 +83,22 @@ app.whenReady().then(async () => {
 
   const store = new Store();
 
-  // Guardar el token
+  // Configurar los canales IPC
   ipcMain.on('save-token', (event, token) => {
     store.set('token', token);
     console.log('Token guardado:', token);
   });
 
-  // Guardar los datos
   ipcMain.on('save-data', (event, data) => {
     store.set('data', data);
     console.log('Datos guardados:', data);
   });
 
-  // Obtener el token
   ipcMain.on('get-token', (event) => {
     const token = store.get('token');
     event.sender.send('token-data', token);
   });
 
-  // Obtener los datos
   ipcMain.on('get-data', (event) => {
     const data = store.get('data');
     event.sender.send('data-complete', data);
@@ -99,5 +109,12 @@ app.whenReady().then(async () => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+// Detener el servidor al salir de la aplicación
+app.on('before-quit', () => {
+  if (serverProcess) {
+    serverProcess.kill();
   }
 });
