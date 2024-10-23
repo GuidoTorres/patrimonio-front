@@ -144,7 +144,7 @@ const ConsultaSiga = ({ setTitle }) => {
       {
         key: "3",
         label: "Cod. Ubicación",
-        children: record?.TIPO_UBICAC + "" + record?.COD_UBICAC,
+        children: record?.TIPO_UBICAC + "" + record?.COD_UBICAC + " - " + record?.UBICAC_FISICA,
       },
       {
         key: "4",
