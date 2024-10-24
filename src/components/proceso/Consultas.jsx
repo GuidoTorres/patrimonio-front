@@ -29,8 +29,10 @@ const Consultas = ({ setTitle }) => {
   const [edit, setEdit] = useState(null);
   const [modal, setModal] = useState(false);
   const getBienes = async () => {
+    const usuario = localStorage.getItem("usuario");
+
     const response = await fetch(
-      `${process.env.REACT_APP_BASE}/bienes/inventariados`
+      `${process.env.REACT_APP_BASE}/bienes/inventariados?usuario_id=${usuario}`
     );
 
     if (response.ok) {

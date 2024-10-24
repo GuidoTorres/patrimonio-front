@@ -153,11 +153,17 @@ const ConsultaSiga = ({ setTitle }) => {
       },
       {
         key: "5",
+        label: "Ubicación",
+        children: record?.NOMBRE_DEPEND+" - "+record?.TIPO_UBICAC + "" + record?.COD_UBICAC +" - "+ record?.UBICAC_FISICA,
+      },
+
+      {
+        key: "6",
         label: "DNI",
         children: record?.docum_ident,
       },
       {
-        key: "5",
+        key: "7",
         label: "Responsable",
         children: record?.nombre_completo,
       },

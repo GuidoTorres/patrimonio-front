@@ -97,8 +97,6 @@ const FormularioBien = ({
     let trabajador = null;
     if (storedTrabajador) {
       trabajador = JSON.parse(storedTrabajador);
-
-      console.log(trabajador);
     }
 
     if (data) {
@@ -550,8 +548,20 @@ const FormularioBien = ({
               <Form.Item
                 label="Detalles"
                 name="detalles"
-                className="form-item-large"
-                style={{ width: "100%" }}
+                className="form-item"
+                rules={[
+                  {
+                    required: false,
+                    message: "La sede es obligatoria!",
+                  },
+                ]}
+              >
+                <Input allowClear disabled={data?.estado === "2"} />
+              </Form.Item>
+              <Form.Item
+                label="Observación"
+                name="observacion"
+                className="form-item"
                 rules={[
                   {
                     required: false,

@@ -90,8 +90,13 @@ const Inventario = ({ setTitle }) => {
   };
 
   // Función para obtener los bienes
-  const getBienes = async () => {
-    // Si el usuario presiona "Enter" o la longitud del input es de 12 caracteres
+// Función para obtener los bienes
+const getBienes = async () => {
+  try {
+    // Limpiar el estado de isSobrante y sbnSobrante antes de realizar una nueva búsqueda
+    setIsSobrante(false);
+    setSbnSobrante(null);
+
     const response = await fetch(
       `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${buscar}`
     );
@@ -104,10 +109,14 @@ const Inventario = ({ setTitle }) => {
         setIsSobrante(true);
         setBienes(null);
       } else {
+        // Si es un bien tipo "sobrante", marcarlo como sobrante
         if (info.info.tipo === "sobrante") {
           setIsSobrante(true);
+          setSbnSobrante(info.sbn); // Opcional, dependiendo de si quieres almacenar el SBN de sobrante
         } else {
+          // Restablecer el estado de sobrante si se encuentra un bien normal o activo
           setIsSobrante(false);
+          setSbnSobrante(null);
         }
         setBienes(info.info); // Guardar los bienes en el estado si se encuentran
       }
@@ -125,7 +134,11 @@ const Inventario = ({ setTitle }) => {
         setMostrarBoton(true);
       }
     }
-  };
+  } catch (error) {
+    console.error("Error al obtener los bienes:", error);
+  }
+};
+
 
   const getSedes = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/sedes`);
@@ -179,24 +192,32 @@ const Inventario = ({ setTitle }) => {
   };
 
   const handleInputChange = (e) => {
+    const newValue = e.target.value;
+  
+    // Restablecer el estado de isSobrante y sbnSobrante si se está buscando un nuevo bien
+    setIsSobrante(false);
+    setSbnSobrante(null);
+  
     if (
       ubicacionValues.sede_id !== "" &&
       ubicacionValues.dependencia_id !== "" &&
       ubicacionValues.ubicacion_id &&
       filteredTrabajador !== null
     ) {
-      const newValue = e.target.value;
       setBuscar(newValue);
     } else {
       message.warning(
         "Seleccione todos los campos de ubicación y el responsable."
       );
     }
-
+  
     if (e === "") {
       setBuscar("");
+      setSbnSobrante(null);
+      setIsSobrante(false);
     }
   };
+  
 
   const limpiarUbicaciones = () => {
     localStorage.removeItem("sede_id"); // Eliminar del localStorage
@@ -234,10 +255,6 @@ const Inventario = ({ setTitle }) => {
     const dependencia = localStorage.getItem("dependencia_id");
     const trabajador = localStorage.getItem("trabajador_id"); // Eliminar del localStorage
 
-    console.log(sede);
-    console.log(ubicacion);
-    console.log(dependencia);
-    console.log(trabajador);
     if (
       sede !== null &&
       ubicacion !== null &&
@@ -258,6 +275,7 @@ const Inventario = ({ setTitle }) => {
         console.log(info);
       } else {
         setSbnSobrante(null);
+        setIsSobrante(false)
       }
     } else {
       message.warning(
@@ -265,6 +283,7 @@ const Inventario = ({ setTitle }) => {
       );
     }
   };
+
 
   return (
     <>
@@ -432,12 +451,14 @@ const Inventario = ({ setTitle }) => {
                 handleInputChange(e);
               } else {
                 setMostrarBoton(false);
+                setSbnSobrante(null)
+                setIsSobrante(false)
               }
             }}
             allowClear
             ref={searchInputRef}
-            value={buscar}
             onKeyDown={handleKeyPress}
+            
           />
           {isSobrante ? (
             <Tag
