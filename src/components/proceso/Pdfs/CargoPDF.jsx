@@ -9,7 +9,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import dayjs from "dayjs";
-import img from "../../../assets/autodema.png";
+import img from "../../../assets/logo_autodema.png";
 import img2 from "../../../assets/gobierno.png";
 
 const styles = StyleSheet.create({
@@ -139,7 +139,7 @@ const CargoPDF = ({ registros }) => {
                 }}
               >
                 <View style={{ flex: 2, alignItems: "flex-start" }}>
-                  <Image src={img} style={{ height: "50px", width: "100px" }} />
+                  <Image src={img} style={{ height: "50px", width: "80px" }} />
                 </View>
                 <View
                   style={{ flex: 4, alignItems: "center", marginTop: "20px" }}
@@ -147,9 +147,7 @@ const CargoPDF = ({ registros }) => {
                   <Text style={{ fontSize: "12px" }}>
                     COMISIÓN DE INVENTARIO BIENES MUEBLES
                   </Text>
-                  <Text style={{ fontSize: "12px" }}>
-                    {"Año" + " " + dayjs().format("YYYY")}
-                  </Text>
+
                 </View>
                 <View style={{ flex: 2, alignItems: "flex-end" }}>
                   <Image src={img2} style={{ height: "50px", width: "80px" }} />
@@ -164,12 +162,12 @@ const CargoPDF = ({ registros }) => {
                   flexDirection: "row",
                   width: "100%",
                   justifyContent: "center",
-                  marginTop: "10px",
+                  marginTop: "-25px",
                 }}
               >
                 <View style={{ flex: 4, alignItems: "center" }}>
                   <Text style={{ fontSize: "12px" }}>TARJETA DE CARGO</Text>
-                  <Text style={{ fontSize: "10px" }}>{"EJERCICIO" + " " + dayjs().format("YYYY")}</Text>
+                  <Text style={{ fontSize: "11px", marginTop:"5px" }}>{"EJERCICIO" + " " + dayjs().format("YYYY")}</Text>
                 </View>
               </View>
 
@@ -390,15 +388,17 @@ const CargoPDF = ({ registros }) => {
                 <View style={styles.footerText}>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     El usuario declara haber mostrado todos los bienes que se
-                    encuentran bajo responsabilidad...
+                    encuentran bajo responsabilidad y no contar con mas bienes materia de inventario.
                   </Text>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     El usuario es responsable de la permanencia y conservación
-                    de cada uno de los bienes muebles...
+                    de cada uno de los bienes muebles descritos, recomendando tomar las precauciones del caso para evitar, sustracciones, deterioro,etc.
                   </Text>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     Cualquier necesidad de traslado del bien mueble dentro o
-                    fuera del local de la entidad...
+                    fuera del local de la entidad, es previamente comunicado oportunamente al encargado de la Oficina de Control Patrimonial bajo responsabilidad; de 
+                    conformidad con la DIRECTIVA, Directiva N° 0006-2021-EF/54.01, aprobada con RESOLUCIÓN DIRECTORAL N° 0015-2021-EF/54.01 "Directiva para la gestión de bienes
+                    muebles patrimoniales en el marco del Sistema Nacional de Abastecimiento".
                   </Text>
                 </View>
               </View>

@@ -3,6 +3,7 @@ import Item from "antd/es/list/Item";
 import React, { useEffect, useRef, useState } from "react";
 import CodigoBarras from "./Etiquetas/CodigoBarras";
 import { useReactToPrint } from "react-to-print";
+import Search from "antd/es/input/Search";
 
 const EtiquetasBienes = ({ setTitle }) => {
   const barcodeRef = useRef();
@@ -28,6 +29,7 @@ const EtiquetasBienes = ({ setTitle }) => {
 
   const [selectedUbicacion, setSelectedUbicacion] = useState(null);
   const [selectedDependencia, setSelectedDependencia] = useState(null);
+  const [search, setSearch] = useState([])
 
   useEffect(() => {
     getTrabajador();
@@ -127,6 +129,7 @@ const EtiquetasBienes = ({ setTitle }) => {
     if (response.ok) {
       const info = await response.json();
       setEtiquetas(info); // Guardar los bienes en el estado si la respuesta es exitosa
+      setSearch(info)
     } else {
       setEtiquetas([]);
     }
@@ -210,6 +213,21 @@ const EtiquetasBienes = ({ setTitle }) => {
       align: "center",
     },
   ];
+
+  const onSearch = (value) => {
+
+    if (value) {
+
+      const filterData = etiquetas.filter(item => item.sbn == value?.trim())
+
+      setSearch(filterData)
+    } else {
+      setSearch(etiquetas)
+    }
+
+
+
+  }
 
 
   return (
@@ -366,6 +384,21 @@ const EtiquetasBienes = ({ setTitle }) => {
           </Flex>
         ) : null}
       </Flex>
+
+      <Flex
+        justify="start"
+        gap={"10px"}
+        style={{
+          backgroundColor: "white",
+          padding: "15px",
+          borderRadius: "8px",
+          border: "1px solid lightgrey",
+          marginTop: "10px"
+        }}
+        wrap="wrap"
+      >
+        <Search onSearch={onSearch} style={{ width: "200px" }} placeholder="Busqueda por SBN" onChange={(e) => onSearch(e.target.value)} />
+      </Flex>
       <div
         style={{
           height: "90%",
@@ -384,7 +417,7 @@ const EtiquetasBienes = ({ setTitle }) => {
         <div style={{ padding: "15px" }}>
           <Table
             columns={columns}
-            dataSource={etiquetas}
+            dataSource={search}
             className="custom-header-table"
           />
         </div>
