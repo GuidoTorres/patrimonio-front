@@ -71,15 +71,29 @@ const Inventario = ({ setTitle }) => {
     getUbicaciones();
     getTrabajador();
   }, []);
+  const [debouncedValue, setDebouncedValue] = useState(buscar); // Estado para el valor retrasado
 
-  // useEffect que llama a getBienes cuando 'buscar' cambia
+  // Maneja el debounce manualmente
   useEffect(() => {
-    if (buscar !== "" && buscar?.length === 12) {
-      getBienes(); // Llama a la función sin pasar el evento
+    // Establece un temporizador de 500 ms
+    const handler = setTimeout(() => {
+      setDebouncedValue(buscar); // Actualiza el valor después de que el usuario ha dejado de escribir
+    }, 500); // Ajusta el tiempo según tu necesidad
+
+    // Limpia el temporizador si el usuario sigue escribiendo
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [buscar]); // Solo se ejecuta si 'buscar' cambia
+
+  // Este useEffect se ejecutará cuando el valor debounced cambie
+  useEffect(() => {
+    if (debouncedValue !== "" && debouncedValue.length >= 4) { // Ajusta la longitud mínima que prefieras
+      getBienes(); // Llama a la función cuando debouncedValue tiene al menos 6 caracteres
     } else {
       limpiarData();
     }
-  }, [buscar]);
+  }, [debouncedValue]);
 
   // Manejo de la tecla "Enter"
   const handleKeyPress = (e) => {

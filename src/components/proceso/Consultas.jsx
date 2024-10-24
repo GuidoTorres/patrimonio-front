@@ -8,7 +8,12 @@ import {
   Descriptions,
   Tag,
   Image,
+  message,
 } from "antd";
+import {
+  EditOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import ModalEditarBien from "../consultas/ModalEditarBien";
 const Consultas = ({ setTitle }) => {
   useEffect(() => {
@@ -122,7 +127,11 @@ const Consultas = ({ setTitle }) => {
     {
       title: "ACCIONES",
       render: (_, record) => (
-        <Button onClick={() => handleEditar(record)}>Editar</Button>
+        <Flex gap={"2px"} justify="center" align="center">
+          <Button onClick={() => handleEditar(record)}><EditOutlined /></Button>
+          <Button onClick={() => handleDelete(record)}><CloseOutlined /></Button>
+
+        </Flex>
       ),
       align: "center",
     },
@@ -134,8 +143,22 @@ const Consultas = ({ setTitle }) => {
     });
   };
 
+  const handleDelete = async(value) =>{
+
+    const id = value.id
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE}/bienes/eliminar?id=${id}`
+    );
+
+    if (response.ok) {
+      const info = await response.json();
+      getBienes()
+      message.success(info.msg)
+    }
+
+  }
+
   const handleEditar = (record) => {
-    console.log("prueba");
     setEdit(record);
     setModal(true);
   };
@@ -186,7 +209,7 @@ const Consultas = ({ setTitle }) => {
         children:
           record?.ubicacione?.tipo_ubicac +
           "" +
-          record?.ubicacione?.ubicac_fisica +"-"+  record?.ubicacione?.nombre,
+          record?.ubicacione?.ubicac_fisica + "-" + record?.ubicacione?.nombre,
       },
       {
         key: "4",

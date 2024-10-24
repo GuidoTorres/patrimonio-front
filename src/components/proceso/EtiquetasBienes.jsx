@@ -261,16 +261,22 @@ const EtiquetasBienes = ({ setTitle }) => {
           borderRadius: "8px",
           border: "1px solid lightgrey",
         }}
+        wrap="wrap"
       >
         <Select
           placeholder="Trabajador"
-          className="form-item-input"
+          style={{
+            flexBasis: "200px", // Definir un tamaño flexible mínimo
+            maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
+            flexGrow: 1, // Permitir que crezca si hay espacio disponible
+          }}
           onChange={(e) => setDni(e)}
           showSearch
           optionFilterProp="children"
           filterOption={(input, option) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
+          popupMatchSelectWidth={true}
           allowClear
           options={trabajadores?.map((item) => {
             return { label: item.nombre, value: item.dni };
@@ -280,7 +286,11 @@ const EtiquetasBienes = ({ setTitle }) => {
         <Select
           value={ids.sedeId}
           placeholder="Sedes"
-          className="form-item-input"
+          style={{
+            flexBasis: "200px", // Definir un tamaño flexible mínimo
+            maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
+            flexGrow: 1, // Permitir que crezca si hay espacio disponible
+          }}
           onChange={handleSedeChange}
           showSearch
           optionFilterProp="children"
@@ -298,8 +308,11 @@ const EtiquetasBienes = ({ setTitle }) => {
         <Select
           value={ids.dependenciaId}
           placeholder="Dependencias"
-          className="form-item-input"
-          onChange={handleDependenciaChange}
+          style={{
+            flexBasis: "200px", // Definir un tamaño flexible mínimo
+            maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
+            flexGrow: 1, // Permitir que crezca si hay espacio disponible
+          }}          onChange={handleDependenciaChange}
           showSearch
           optionFilterProp="children"
           filterOption={(input, option) =>
@@ -316,8 +329,11 @@ const EtiquetasBienes = ({ setTitle }) => {
 
         <Select
           placeholder="Ubicaciones"
-          className="form-item-input"
-          onChange={handleUbicacionChange}
+          style={{
+            flexBasis: "200px", // Definir un tamaño flexible mínimo
+            maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
+            flexGrow: 1, // Permitir que crezca si hay espacio disponible
+          }}          onChange={handleUbicacionChange}
           showSearch
           optionFilterProp="children"
           filterOption={(input, option) =>
