@@ -107,7 +107,7 @@ const ConsultaSiga = ({ setTitle }) => {
     if (serie) queryParams.append("serie", serie);
 
     const response = await fetch(
-      `http://10.30.1.49/api/v1/bienes?${queryParams.toString()}`
+      `http://localhost:3006/api/v1/bienes?${queryParams.toString()}`
     );
     const data = await response.json();
     if (response.ok) {
@@ -142,30 +142,30 @@ const ConsultaSiga = ({ setTitle }) => {
           : "SIN OBSERVACIONES",
       },
       {
-        key: "3",
-        label: "Cod. Ubicación",
-        children: record?.TIPO_UBICAC + "" + record?.COD_UBICAC + " - " + record?.UBICAC_FISICA,
-      },
-      {
         key: "4",
         label: "Sede",
         children: record?.nombre_sede,
       },
       {
         key: "5",
-        label: "Ubicación",
-        children: record?.NOMBRE_DEPEND+" - "+record?.TIPO_UBICAC + "" + record?.COD_UBICAC +" - "+ record?.UBICAC_FISICA,
+        label: "Dependencia/Ubicación",
+        children: record?.NOMBRE_DEPEND+" / "+ record?.UBICAC_FISICA,
       },
 
-      {
-        key: "6",
-        label: "DNI",
-        children: record?.docum_ident,
-      },
+      // {
+      //   key: "6",
+      //   label: "DNI",
+      //   children: record?.docum_ident,
+      // },
       {
         key: "7",
         label: "Responsable",
-        children: record?.nombre_completo,
+        children: record?.RESPONSABLE,
+      },
+      {
+        key: "8",
+        label: "Usuario",
+        children: record?.USUARIO_FINAL,
       },
     ];
 

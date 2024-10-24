@@ -88,11 +88,7 @@ const ModalEditarBien = ({ modal, setModal, setEdit, edit, getBienes }) => {
     setFile(null); // Eliminar el archivo de imagen
   };
   const onFinish = async (values) => {
-    const storedSede = localStorage.getItem("sede_id");
-    const storedDependencia = localStorage.getItem("dependencia_id");
-    const storedUbicacion = localStorage.getItem("ubicacion_id");
-    const storedTrabajador = localStorage.getItem("trabajador_id");
-    const usuario = localStorage.getItem("usuario");
+
 
     // Inicializar `trabajador` solo si `storedTrabajador` existe
     let trabajador = null;
@@ -107,20 +103,13 @@ const ModalEditarBien = ({ modal, setModal, setEdit, edit, getBienes }) => {
     formData.append("estado", values.estado || null);
     formData.append("situacion", values.situacion || false);
     formData.append("detalles", values.detalles || "");
-    formData.append("sede_id", storedSede || null); // Usar null si no hay valor
-    formData.append("dependencia_id", storedDependencia || null); // Usar null si no hay valor
-    formData.append("ubicacion_id", storedUbicacion || null); // Usar null si no hay valor
     formData.append("dni", values.dni || "");
     formData.append("estado_patrimonial", values.estado_patrimonial || null);
     formData.append("inventariado", true);
     formData.append("fecha_registro", dayjs().format("DD/MM/YYYY"));
-    formData.append("usuario_id", usuario || null);
     formData.append("sbn", values.sbn || "");
     formData.append("observacion", values.observacion || "")
-    if (storedTrabajador) {
-      trabajador = JSON.parse(storedTrabajador);
-      formData.append("trabajador_id", trabajador.id || null);
-    }
+
 
     // Si hay una imagen seleccionada, añadirla a FormData
     if (file) {

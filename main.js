@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const url = require('url');
+const isDev = require("electron-is-dev");
 
 let mainWindow;
 let isOnline;
@@ -12,21 +12,18 @@ function createWindow() {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: false,
-      contextIsolation: true,
+      contextIsolation: false,
     },
   });
 
-  const startUrl = process.env.ELECTRON_START_URL || `file://${path.join(__dirname, 'index.html')}`;
-
-  console.log(startUrl);
-
-  if (process.env.ELECTRON_START_URL) {
-    // En desarrollo, cargar la URL del servidor de React
-    mainWindow.loadURL(process.env.ELECTRON_START_URL);
-  } else {
-    // En producción, cargar el archivo index.html del build generado
-    mainWindow.loadURL(startUrl);
-  }
+  mainWindow.loadURL(
+    isDev
+    ? "http://localhost:3000"
+    : `file://${path.join(__dirname, "../build/index.html")}`
+   );
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+   }
 
   mainWindow.webContents.openDevTools(); // Solo en desarrollo
 }

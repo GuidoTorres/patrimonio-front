@@ -152,7 +152,7 @@ const EtiquetasBienes = ({ setTitle }) => {
       handlePrint(); // Ejecutamos la impresión solo cuando el trigger es true
       setPrintTrigger(false); // Reiniciamos el trigger después de imprimir
     }
-  }, [printTrigger, selectedBarras]); 
+  }, [printTrigger, selectedBarras]);
 
   const limpiarFiltros = () => {
     setSedes([]);
@@ -312,7 +312,7 @@ const EtiquetasBienes = ({ setTitle }) => {
             flexBasis: "200px", // Definir un tamaño flexible mínimo
             maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
             flexGrow: 1, // Permitir que crezca si hay espacio disponible
-          }}          onChange={handleDependenciaChange}
+          }} onChange={handleDependenciaChange}
           showSearch
           optionFilterProp="children"
           filterOption={(input, option) =>
@@ -333,7 +333,7 @@ const EtiquetasBienes = ({ setTitle }) => {
             flexBasis: "200px", // Definir un tamaño flexible mínimo
             maxWidth: "250px", // Limitar el ancho máximo para que no ocupe toda la línea
             flexGrow: 1, // Permitir que crezca si hay espacio disponible
-          }}          onChange={handleUbicacionChange}
+          }} onChange={handleUbicacionChange}
           showSearch
           optionFilterProp="children"
           filterOption={(input, option) =>
@@ -376,8 +376,8 @@ const EtiquetasBienes = ({ setTitle }) => {
           backgroundColor: "white",
         }}
       >
-        <div ref={barcodeRef} 
-        className="barcode-print"
+        <div ref={barcodeRef}
+          className="barcode-print"
         >
           <CodigoBarras values={selectedBarras} className="etiqueta" />
         </div>
