@@ -1,7 +1,7 @@
 import { Button, Flex, Table, notification } from "antd";
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import ModalJefes from "./ModalJefes";
+import ModalJefes from "./ModalJefes.jsx";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 const Jefes = ({ setTitle }) => {
   const [jefes, setJefes] = useState([]);

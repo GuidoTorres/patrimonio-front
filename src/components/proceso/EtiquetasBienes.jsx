@@ -1,7 +1,6 @@
 import { Button, Flex, Input, Select, Table, Typography } from "antd";
-import Item from "antd/es/list/Item";
 import React, { useEffect, useRef, useState } from "react";
-import CodigoBarras from "./Etiquetas/CodigoBarras";
+import CodigoBarras from "./Etiquetas/CodigoBarras.jsx";
 import { useReactToPrint } from "react-to-print";
 import Search from "antd/es/input/Search";
 

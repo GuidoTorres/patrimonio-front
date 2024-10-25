@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { InventarioContext } from "../context/InventarioContext";
+import { InventarioContext } from "../context/InventarioContext.jsx";
 
 export const ProtectedRoute = ({ children }) => {
   const { isLogged, setIsLogged } = useContext(InventarioContext);

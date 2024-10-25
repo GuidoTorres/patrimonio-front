@@ -4,6 +4,7 @@
   "private": true,
   "main": "main.js",
   "homepage": "./",
+  "type": "module",
   "dependencies": {
     "@react-pdf/renderer": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",

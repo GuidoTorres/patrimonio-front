@@ -4,7 +4,6 @@ import QRCode from "react-qr-code";
 import image from "../../assets/logo_autodema.png";
 import image1 from "../../assets/gobierno.png";
 import { useReactToPrint } from "react-to-print";
-import { noop } from 'antd/es/_util/warning';
 const EtiquetasUbicaciones = () => {
     const barcodeRef = useRef();
 

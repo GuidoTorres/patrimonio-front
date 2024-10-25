@@ -1,6 +1,6 @@
 import "./App.css";
-import { InventarioProvider } from "./context/InventarioContext";
-import Administrador from "./pages/Administrador";
+import { InventarioProvider } from "./context/InventarioContext.jsx";
+import Administrador from "./pages/Administrador.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 
 function App() {
