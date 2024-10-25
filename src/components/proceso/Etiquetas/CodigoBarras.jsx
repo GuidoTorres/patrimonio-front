@@ -29,7 +29,7 @@ const CodigoBarras = ({ values }) => {
           >
             <div style={{ flex: 1 }}>
               <img
-                src={image1}
+                src={`${process.env.PUBLIC_URL}/assets/gobierno.png`}
                 alt="Custom Logo"
                 style={{ height: "15px", imageRendering: "crisp-edges" }}
               />
@@ -64,7 +64,7 @@ const CodigoBarras = ({ values }) => {
             </div>
             <div style={{ flex: 1 }}>
               <img
-                src={image}
+                src={`${process.env.PUBLIC_URL}/assets/logo_autodema.png`}
                 alt="Custom Logo"
                 style={{ height: "15px", imageRendering: "crisp-edges" }}
               />

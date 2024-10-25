@@ -139,7 +139,7 @@ const CargoPDF = ({ registros }) => {
                 }}
               >
                 <View style={{ flex: 2, alignItems: "flex-start" }}>
-                  <Image src={img} style={{ height: "50px", width: "80px" }} />
+                  <Image src={`${process.env.PUBLIC_URL}/assets/logo_autodema.png`} style={{ height: "50px", width: "80px" }} />
                 </View>
                 <View
                   style={{ flex: 4, alignItems: "center", marginTop: "20px" }}
@@ -150,7 +150,7 @@ const CargoPDF = ({ registros }) => {
 
                 </View>
                 <View style={{ flex: 2, alignItems: "flex-end" }}>
-                  <Image src={img2} style={{ height: "50px", width: "80px" }} />
+                  <Image src={`${process.env.PUBLIC_URL}/assets/gobierno.png`} style={{ height: "50px", width: "80px" }} />
 
                   <Text>{pageIndex + 1 + "/" + paginatedData1.length}</Text>
                   <Text>{dayjs().format("DD/MM/YYYY")}</Text>
