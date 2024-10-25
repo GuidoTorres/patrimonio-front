@@ -14,7 +14,7 @@ import {
   EditOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import ModalEditarBien from "../consultas/ModalEditarBien.jsx";
+import ModalEditarBien from "../consultas/ModalEditarBien";
 const Consultas = ({ setTitle }) => {
   useEffect(() => {
     setTitle("Consulta Bienes Inventariados");

@@ -1,6 +1,6 @@
 import { Flex, Input, Image, Empty, message, Tag, Select, Button } from "antd";
 import React, { useEffect, useRef, useState } from "react";
-import FormularioBien from "./FormularioBien.jsx";
+import FormularioBien from "./FormularioBien";
 import "./styles/inventario.css";
 
 const { Search } = Input;

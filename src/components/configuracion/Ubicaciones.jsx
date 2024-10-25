@@ -1,8 +1,9 @@
 import { Button, Flex, Input, Table, notification } from "antd";
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
+import ModalUsuarios from "./ModalUsuarios";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import ModalUbicaciones from "./ModalUbicaciones.jsx";
+import ModalUbicaciones from "./ModalUbicaciones";
 
 const Ubicaciones = ({ setTitle }) => {
   const [ubicaciones, setUbicaciones] = useState([]);

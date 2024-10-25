@@ -1,6 +1,7 @@
 import { Button, Flex, Input, Table, notification } from "antd";
+import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import ModalUsuarios from "./ModalUsuarios.jsx";
+import ModalUsuarios from "./ModalUsuarios";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const Usuarios = ({ setTitle }) => {

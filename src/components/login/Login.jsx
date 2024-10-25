@@ -2,7 +2,7 @@ import { Input, Typography, Button, notification } from "antd";
 import React, { useContext, useState } from "react";
 import imagen from "../../assets/autodema.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import { InventarioContext } from "../../context/InventarioContext.jsx";
+import { InventarioContext } from "../../context/InventarioContext";
 
 const Login = ({  }) => {
   const navigate = useNavigate();

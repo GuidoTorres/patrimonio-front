@@ -1,7 +1,7 @@
 import { Button, Input, Table, notification } from "antd";
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import ModalInvetariador from "./ModalInvetariador.jsx";
+import ModalInvetariador from "./ModalInvetariador";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 const Inventariadores = ({ setTitle }) => {
   const [inventariadores, setInventariadores] = useState([]);

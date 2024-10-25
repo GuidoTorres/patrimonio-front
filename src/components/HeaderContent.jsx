@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Flex, Popover, Typography } from "antd";
 import React, { useContext, useState, useEffect } from "react";
-import { InventarioContext } from "../context/InventarioContext.jsx";
+import { InventarioContext } from "../context/InventarioContext";
 import { useNavigate } from "react-router-dom";
 
 

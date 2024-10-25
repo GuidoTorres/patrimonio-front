@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { Row, Col, Card, Statistic, Tabs, Typography, Flex } from "antd";
-import Grafico from "./Grafico.jsx";
+import Grafico from "./Grafico";
 
 const socket = io("http://localhost:3006"); // Conectar a Socket.IO
 

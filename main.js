@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-import path from "path";
-import isDev from "electron-is-dev";
+const path = require("path");
+const isDev = require("electron-is-dev");
 
 let mainWindow;
 let isOnline;
