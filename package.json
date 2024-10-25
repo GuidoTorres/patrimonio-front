@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
+  "homepage": "./",
   "dependencies": {
     "@react-pdf/renderer": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -30,13 +31,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "package:linux": "electron-packager . react-electron-app --platform=linux --arch=x64 --overwrite",
+    "package:win": "electron-packager . react-electron-app --platform=win32 --arch=x64 --overwrite",
+    "package:mac": "electron-packager . react-electron-app --platform=darwin --arch=x64 --overwrite",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron .",
-    "dist": "electron-builder --win",
-    "package": "electron-packager ."
+    "electron": "electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -60,6 +62,7 @@
     "concurrently": "^9.0.1",
     "electron": "^32.2.2",
     "electron-builder": "^25.1.8",
+    "electron-packager": "^17.1.2",
     "wait-on": "^8.0.1"
   },
   "build": {

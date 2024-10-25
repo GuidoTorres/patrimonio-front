@@ -10,22 +10,14 @@ function createWindow() {
     width: 1200,
     height: 900,
     webPreferences: {
-      webSecurity: false,
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: false,
     },
   });
 
-  mainWindow.loadURL(
-    isDev
-    ? "http://localhost:3000"
-    : `file://${path.join(__dirname, "../build/index.html")}`
-   );
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-   }
-
-  mainWindow.webContents.openDevTools(); // Solo en desarrollo
+  const filePath = `build/index.html`;
+  !app.isPackaged ? mainWindow.loadURL("http://localhost:3000") : mainWindow.loadFile(filePath);
+  mainWindow.on("closed", () => (mainWindow = null));
 }
 
 // Función para cargar dinámicamente is-online y electron-store
