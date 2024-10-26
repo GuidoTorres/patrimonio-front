@@ -12,4 +12,4 @@ root.render(
 );
 
 
-serviceWorker.register();
+serviceWorker.unregister();

@@ -177,11 +177,15 @@ const Consultas = ({ setTitle }) => {
     return query.toString();
   };
 
-  // Enviar la consulta a la API
   const handleSearch = async () => {
+    const usuario = localStorage.getItem("usuario");
+  
+    // Construir los parámetros de la consulta
     const queryParams = buildQueryParams();
-    const url = `${process.env.REACT_APP_BASE}/bienes/consulta?${queryParams}`;
-
+    
+    // Añadir usuario_id al queryParams
+    const url = `${process.env.REACT_APP_BASE}/bienes/consulta?${queryParams}&usuario_id=${usuario}`;
+  
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -190,6 +194,7 @@ const Consultas = ({ setTitle }) => {
       console.error("Error fetching data:", error);
     }
   };
+  
 
   const expandedRowRenderPrueba = (record) => {
     const items = [
