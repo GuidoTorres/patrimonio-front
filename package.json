@@ -2,7 +2,7 @@
   "name": "front-patrimonio",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": "http://localhost:3006",
   "dependencies": {
     "@react-pdf/renderer": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",

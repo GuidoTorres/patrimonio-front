@@ -1,47 +1,85 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { Row, Col, Card, Statistic, Tabs, Typography, Flex } from "antd";
 import Grafico from "./Grafico";
 
-const socket = io("http://localhost:3006"); // Conectar a Socket.IO
+// const socket = io("http://localhost:3006"); // Conectar a Socket.IO
 
 const Reportes = ({ setTitle }) => {
+  const [bienes, setBienes] = useState([]); 
+  const [actualizacion, setActualizacion] = useState(null); 
+  const [estadisticas, setEstadisticas] = useState({});
+  const socketRef = useRef(null);
   useEffect(() => {
     setTitle("Reportes");
+    fetchBienes()
   }, []);
-  const [bienes, setBienes] = useState([]); // Estado para almacenar el número de bienes inventariados
-  const [actualizacion, setActualizacion] = useState(null); // Estado para mostrar las actualizaciones en tiempo real
-  const [estadisticas, setEstadisticas] = useState({});
-  useEffect(() => {
-    // Solicitar los bienes inventariados al montar el componente
-    fetch(`${process.env.REACT_APP_BASE}/bienes/inventariador`)
-      .then((response) => response.json())
-      .then((data) => {
-        setBienes(data.data); // Inicializar con el número de bienes inventariados
-      })
-      .catch((error) => console.error("Error fetching bienes:", error));
 
-    // Escuchar cuando un bien ha sido registrado o actualizado
-    socket.on("bien-actualizado", (data) => {
-      console.log("Bien actualizado:", data);
+  const fetchBienes = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BASE}/bienes/inventariador`);
+      const data = await response.json();
+      setBienes(data.data);
+    } catch (error) {
+      console.error("Error fetching bienes:", error);
+    }
+  };
 
-      // Actualizar el contador con el valor más reciente del backend
-      const updatedBienes = bienes.map((item) => {
-        if (item.usuario?.id === data.bien.usuario_id) {
-          return { ...item, total_bienes: item.total_bienes + 1 }; // Incrementar el conteo del inventariador
-        }
-        return item;
-      });
+  // useEffect(() => {
+  //   // Create socket connection
+  //   const SOCKET_URL = process.env.REACT_APP_BASE || 'http://localhost:3006';
+    
+  //   if (!socketRef.current) {
+  //     // Initialize socket with proper configuration
+  //     socketRef.current = io(SOCKET_URL, {
+  //       transports: ['websocket'],
+  //       reconnection: true,
+  //       reconnectionAttempts: 5,
+  //       reconnectionDelay: 5000,
+  //       path: '/socket.io', // Make sure this matches your server config
+  //       autoConnect: true,
+  //     });
 
-      setBienes(updatedBienes); // Actualizar la lista de bienes con el nuevo conteo
-      setActualizacion(data.bien); // Mostrar la última actualización
-    });
+  //     // Socket event handlers
+  //     socketRef.current.on('connect', () => {
+  //       console.log('Socket connected');
+  //       fetchBienes();
+  //     });
 
-    // Limpiar la conexión al desmontar el componente
-    return () => {
-      socket.disconnect();
-    };
-  }, []); // Asegúrate de que `bienes` esté en la lista de dependencias
+  //     socketRef.current.on('bien-actualizado', (data) => {
+  //       console.log('Bien actualizado:', data);
+  //       setBienes(prevBienes => 
+  //         prevBienes.map(item => 
+  //           item.usuario?.id === data.bien.usuario_id
+  //             ? { ...item, total_bienes: item.total_bienes + 1 }
+  //             : item
+  //         )
+  //       );
+  //       setActualizacion(data.bien);
+  //     });
+
+  //     socketRef.current.on('connect_error', (error) => {
+  //       console.error('Socket connection error:', error);
+  //     });
+
+  //     socketRef.current.on('disconnect', (reason) => {
+  //       console.log('Socket disconnected:', reason);
+  //     });
+  //   }
+
+  //   // Cleanup function
+  //   return () => {
+  //     if (socketRef.current) {
+  //       console.log('Cleaning up socket connection');
+  //       socketRef.current.off('connect');
+  //       socketRef.current.off('bien-actualizado');
+  //       socketRef.current.off('connect_error');
+  //       socketRef.current.off('disconnect');
+  //       socketRef.current.disconnect();
+  //       socketRef.current = null;
+  //     }
+  //   };
+  // }, []);
 
   useEffect(() => {
     getEstadisticas();

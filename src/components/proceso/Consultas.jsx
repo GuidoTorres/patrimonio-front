@@ -10,10 +10,7 @@ import {
   Image,
   message,
 } from "antd";
-import {
-  EditOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, CloseOutlined } from "@ant-design/icons";
 import ModalEditarBien from "../consultas/ModalEditarBien";
 const Consultas = ({ setTitle }) => {
   useEffect(() => {
@@ -61,6 +58,45 @@ const Consultas = ({ setTitle }) => {
       const info = await response.json();
       setUbicaciones(info); // Guardar los bienes en el estado si la respuesta es exitosa
     }
+  };
+
+  const downloadExcelInventariados = async () => {
+    const usuario = localStorage.getItem("usuario");
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE}/bienes/inventariados/excel?usuario_id=${usuario}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Convierte la respuesta en un Blob para manejar el archivo
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        // Crear un enlace para descargar el archivo
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "BienesSIGA.xlsx"); // El nombre del archivo que se descargará
+        document.body.appendChild(link);
+        link.click();
+
+        // Limpia el enlace después de la descarga
+        link.parentNode.removeChild(link);
+      } else {
+        const errorMsg = await response.json();
+        message.error("Error al generar Excel");
+      }
+    } catch (error) {
+      message.error("Error");
+      console.error("Error downloading Excel:", error);
+    }
+
+
   };
 
   const columns = [
@@ -128,9 +164,12 @@ const Consultas = ({ setTitle }) => {
       title: "ACCIONES",
       render: (_, record) => (
         <Flex gap={"2px"} justify="center" align="center">
-          <Button onClick={() => handleEditar(record)}><EditOutlined /></Button>
-          <Button onClick={() => handleDelete(record)}><CloseOutlined /></Button>
-
+          <Button onClick={() => handleEditar(record)}>
+            <EditOutlined />
+          </Button>
+          <Button onClick={() => handleDelete(record)}>
+            <CloseOutlined />
+          </Button>
         </Flex>
       ),
       align: "center",
@@ -143,20 +182,18 @@ const Consultas = ({ setTitle }) => {
     });
   };
 
-  const handleDelete = async(value) =>{
-
-    const id = value.id
+  const handleDelete = async (value) => {
+    const id = value.id;
     const response = await fetch(
       `${process.env.REACT_APP_BASE}/bienes/eliminar?id=${id}`
     );
 
     if (response.ok) {
       const info = await response.json();
-      getBienes()
-      message.success(info.msg)
+      getBienes();
+      message.success(info.msg);
     }
-
-  }
+  };
 
   const handleEditar = (record) => {
     setEdit(record);
@@ -179,22 +216,21 @@ const Consultas = ({ setTitle }) => {
 
   const handleSearch = async () => {
     const usuario = localStorage.getItem("usuario");
-  
+
     // Construir los parámetros de la consulta
     const queryParams = buildQueryParams();
-    
+
     // Añadir usuario_id al queryParams
-    const url = `${process.env.REACT_APP_BASE}/bienes/consulta?${queryParams}&usuario_id=${usuario}`;
-  
+    const url = `${process.env.REACT_APP_BASE}/bienes/inventariados?${queryParams}&usuario_id=${usuario}`;
+
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setBienes(data.data);
+      setBienes(data.bien);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  
 
   const expandedRowRenderPrueba = (record) => {
     const items = [
@@ -214,7 +250,9 @@ const Consultas = ({ setTitle }) => {
         children:
           record?.ubicacione?.tipo_ubicac +
           "" +
-          record?.ubicacione?.ubicac_fisica + "-" + record?.ubicacione?.nombre,
+          record?.ubicacione?.ubicac_fisica +
+          "-" +
+          record?.ubicacione?.nombre,
       },
       {
         key: "4",
@@ -363,7 +401,9 @@ const Consultas = ({ setTitle }) => {
               }}
               name="serie"
               value={filters.serie}
-              onChange={(e) => handleInputChange("serie", e.target.value?.trim())}
+              onChange={(e) =>
+                handleInputChange("serie", e.target.value?.trim())
+              }
             />
           </Flex>
           {bienes?.length > 0 ? (
@@ -387,6 +427,13 @@ const Consultas = ({ setTitle }) => {
             align="center"
             justify="end"
           >
+            <Button
+              style={{ backgroundColor: "#4DA362", color: "white" }}
+              onClick={downloadExcelInventariados}
+            >
+              {" "}
+              Excel
+            </Button>
             <Button
               style={{ backgroundColor: "#4DA362", color: "white" }}
               onClick={handleSearch}

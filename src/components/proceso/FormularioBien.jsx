@@ -193,17 +193,17 @@ const FormularioBien = ({
       setUbicaciones(info); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
-  const getData = () => {
-    if (window.electron && window.electron.sendDataRequest) {
-      window.electron.sendDataRequest(); // Solicitar los datos al proceso principal
-      window.electron.onCompleteData((data) => {
-        console.log("Datos recibidos:", data);
-        setUserId(data?.id); // Asignar los datos recibidos al estado
-      });
-    } else {
-      console.error("window.electron no está definido");
-    }
-  };
+  // const getData = () => {
+  //   if (window.electron && window.electron.sendDataRequest) {
+  //     window.electron.sendDataRequest(); // Solicitar los datos al proceso principal
+  //     window.electron.onCompleteData((data) => {
+  //       console.log("Datos recibidos:", data);
+  //       setUserId(data?.id); // Asignar los datos recibidos al estado
+  //     });
+  //   } else {
+  //     console.error("window.electron no está definido");
+  //   }
+  // };
   useEffect(() => {
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
@@ -228,9 +228,7 @@ const FormularioBien = ({
     }
   }, []);
 
-  useEffect(() => {
-    getData(); // Solicitar los datos al montar el componente
-  }, []);
+
   const onFinish = async (values) => {
     const storedSede = localStorage.getItem("sede_id");
     const storedDependencia = localStorage.getItem("dependencia_id");
@@ -471,10 +469,7 @@ const FormularioBien = ({
                 <Select
                   className="form-item-input"
                   options={[
-                    {
-                      value: "5",
-                      label: "Nuevo",
-                    },
+
                     {
                       value: "1",
                       label: "Bueno",

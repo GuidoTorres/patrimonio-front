@@ -37,7 +37,7 @@ const ConsultaSiga = ({ setTitle }) => {
       align: "center",
     },
     {
-      title: "MDOELO",
+      title: "MODELO",
       dataIndex: "MODELO",
       align: "center",
     },
@@ -199,7 +199,6 @@ const ConsultaSiga = ({ setTitle }) => {
           style={{
             padding: "15px",
             borderRadius: "10px",
-            // boxShadow: " rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
           }}
           gap={"10px"}
         >

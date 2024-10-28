@@ -24,20 +24,20 @@ const HeaderContent = ({ title }) => {
     navigate("/");
   };
 
-  const getData = () => {
-    if (window.electron && window.electron.sendDataRequest) {
-      window.electron.sendDataRequest(); // Solicitar los datos al proceso principal
-      window.electron.onCompleteData((data) => {
-        setUser(data?.nombre_usuario); // Asignar los datos recibidos al estado
-      });
-    } else {
-      console.error('window.electron no está definido');
-    }
-  };
+  // const getData = () => {
+  //   if (window.electron && window.electron.sendDataRequest) {
+  //     window.electron.sendDataRequest(); // Solicitar los datos al proceso principal
+  //     window.electron.onCompleteData((data) => {
+  //       setUser(data?.nombre_usuario); // Asignar los datos recibidos al estado
+  //     });
+  //   } else {
+  //     console.error('window.electron no está definido');
+  //   }
+  // };
 
-  useEffect(() => {
-    getData(); // Solicitar los datos al montar el componente
-  }, []);
+  // useEffect(() => {
+  //   getData(); // Solicitar los datos al montar el componente
+  // }, []);
 
 
 

@@ -50,6 +50,11 @@ const Login = ({  }) => {
       });
     }
   };
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      auth();
+    }
+  };
   return (
     <div
       style={{
@@ -76,12 +81,14 @@ const Login = ({  }) => {
           <Input
             onChange={(e) => handleData(e.target.value, "usuario")}
             placeholder={"Usuario"}
+            onKeyDown={handleKeyPress} 
           />
         </div>
         <div style={{ marginTop: "25px", textAlign: "left" }}>
           <Input.Password
             onChange={(e) => handleData(e.target.value, "contrasenia")}
             placeholder={"Contraseña"}
+            onKeyDown={handleKeyPress} 
           />
         </div>
         <div style={{ marginTop: "30px" }}>

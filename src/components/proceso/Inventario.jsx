@@ -3,367 +3,323 @@ import React, { useEffect, useRef, useState } from "react";
 import FormularioBien from "./FormularioBien";
 import "./styles/inventario.css";
 
-const { Search } = Input;
-const Inventario = ({ setTitle }) => {
-  const searchInputRef = useRef(null); // Crear una referencia
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
-    // Asignar el foco al input cuando el componente se monte
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, []);
-  const [bienes, setBienes] = useState(null);
-  const [buscar, setBuscar] = useState("");
-  const [isSobrante, setIsSobrante] = useState(false);
-  const [sedes, setSedes] = useState([]);
-  const [dependencias, setDependencias] = useState([]);
-  const [ubicaciones, setUbicaciones] = useState([]);
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+const Inventario = ({ setTitle }) => {
+  const searchInputRef = useRef(null);
+  const [state, setState] = useState({
+    bienes: null,
+    buscar: "",
+    isSobrante: false,
+    sedes: [],
+    dependencias: [],
+    ubicaciones: [],
+    trabajadores: [],
+    sbnSobrante: null,
+    mostrarBoton: false,
+    filteredTrabajador: null,
+  });
+
   const [ubicacionValues, setUbicacionValues] = useState({
     sede_id: null,
     dependencia_id: null,
     ubicacion_id: null,
   });
-  const [filteredDependencias, setFilteredDependencias] = useState([]);
-  const [filteredUbicaciones, setFilteredUbicaciones] = useState([]);
-  const [trabajadores, setTrabajadores] = useState([]);
-  const [filteredTrabajador, setFilteredTrabajador] = useState(null);
-  const [sbnSobrante, setSbnSobrante] = useState(null);
-  const [mostrarBoton, setMostrarBoton] = useState(false);
+
+  // Computed values instead of using state
+  const filteredDependencias = state.dependencias.filter(
+    (item) => item.sede_id === ubicacionValues.sede_id
+  );
+
+  const filteredUbicaciones = state.ubicaciones.filter(
+    (item) => item.dependencia_id === ubicacionValues.dependencia_id
+  );
+
+  // Initial setup
   useEffect(() => {
-    const storedSede = localStorage.getItem("sede_id");
-    const storedDependencia = localStorage.getItem("dependencia_id");
-    const storedUbicacion = localStorage.getItem("ubicacion_id");
-    const storedTrabajador = localStorage.getItem("trabajador_id");
-    if (storedSede) {
-      setUbicacionValues((value) => ({
-        ...value,
-        sede_id: Number(storedSede),
-      }));
-    }
-
-    if (storedDependencia) {
-      setUbicacionValues((value) => ({
-        ...value,
-        dependencia_id: Number(storedDependencia),
-      }));
-    }
-
-    if (storedUbicacion) {
-      setUbicacionValues((value) => ({
-        ...value,
-        ubicacion_id: Number(storedUbicacion),
-      }));
-    }
-
-    if (storedTrabajador) {
-      let trabajador = JSON.parse(storedTrabajador);
-      setFilteredTrabajador(trabajador.dni);
-    }
-  }, []);
-  useEffect(() => {
+    loadStoredValues();
     setTitle("Registro de Bienes");
-  }, []);
+    fetchInitialData();
 
-  useEffect(() => {
-    getSedes();
-    getDependencias();
-    getUbicaciones();
-    getTrabajador();
-  }, []);
-  const [debouncedValue, setDebouncedValue] = useState(buscar); // Estado para el valor retrasado
-
-  // Maneja el debounce manualmente
-  useEffect(() => {
-    // Establece un temporizador de 500 ms
-    const handler = setTimeout(() => {
-      setDebouncedValue(buscar); // Actualiza el valor después de que el usuario ha dejado de escribir
-    }, 500); // Ajusta el tiempo según tu necesidad
-
-    // Limpia el temporizador si el usuario sigue escribiendo
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [buscar]); // Solo se ejecuta si 'buscar' cambia
-
-  // Este useEffect se ejecutará cuando el valor debounced cambie
-  useEffect(() => {
-    if (debouncedValue !== "" && debouncedValue.length >= 4) { // Ajusta la longitud mínima que prefieras
-      getBienes(); // Llama a la función cuando debouncedValue tiene al menos 6 caracteres
-    } else {
-      limpiarData();
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
     }
-  }, [debouncedValue]);
+  }, []);
+  const debouncedBuscar = useDebounce(state.buscar, 300);
+  useEffect(() => {
+    if (debouncedBuscar?.length >= 4) {  // Changed to >= 4
+      getBienes();
+    } else if (debouncedBuscar === '') {
+      setState(prev => ({
+        ...prev,
+        bienes: null,
+        isSobrante: false,
+        sbnSobrante: null,
+        mostrarBoton: false
+      }));
+    }
+  }, [debouncedBuscar]);
 
-  // Manejo de la tecla "Enter"
-  const handleKeyPress = (e) => {
-    console.log("prueba");
-    if (e.key === "Enter") {
-      getBienes(); // Llama a getBienes sin pasar 'e' como parámetro
+  const fetchInitialData = async () => {
+    try {
+      const [sedesRes, dependenciasRes, ubicacionesRes, trabajadoresRes] =
+        await Promise.all([
+          fetch(`${process.env.REACT_APP_BASE}/sedes`),
+          fetch(`${process.env.REACT_APP_BASE}/dependencias`),
+          fetch(`${process.env.REACT_APP_BASE}/ubicaciones`),
+          fetch(`${process.env.REACT_APP_BASE}/trabajadores/all`),
+        ]);
+
+      const [sedes, dependencias, ubicaciones, trabajadores] =
+        await Promise.all([
+          sedesRes.json(),
+          dependenciasRes.json(),
+          ubicacionesRes.json(),
+          trabajadoresRes.json(),
+        ]);
+
+      setState((prev) => ({
+        ...prev,
+        sedes,
+        dependencias,
+        ubicaciones,
+        trabajadores,
+      }));
+    } catch (error) {
+      console.error("Error loading initial data:", error);
     }
   };
 
-  // Función para obtener los bienes
-// Función para obtener los bienes
-const getBienes = async () => {
-  try {
-    // Limpiar el estado de isSobrante y sbnSobrante antes de realizar una nueva búsqueda
-    setIsSobrante(false);
-    setSbnSobrante(null);
+  const loadStoredValues = () => {
+    const storedValues = {
+      sede_id: localStorage.getItem("sede_id"),
+      dependencia_id: localStorage.getItem("dependencia_id"),
+      ubicacion_id: localStorage.getItem("ubicacion_id"),
+      trabajador: localStorage.getItem("trabajador_id"),
+    };
 
-    const response = await fetch(
-      `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${buscar}`
+    if (
+      storedValues.sede_id ||
+      storedValues.dependencia_id ||
+      storedValues.ubicacion_id
+    ) {
+      setUbicacionValues({
+        sede_id: storedValues.sede_id ? Number(storedValues.sede_id) : null,
+        dependencia_id: storedValues.dependencia_id
+          ? Number(storedValues.dependencia_id)
+          : null,
+        ubicacion_id: storedValues.ubicacion_id
+          ? Number(storedValues.ubicacion_id)
+          : null,
+      });
+    }
+
+    if (storedValues.trabajador) {
+      setState((prev) => ({
+        ...prev,
+        filteredTrabajador: JSON.parse(storedValues.trabajador).dni,
+      }));
+    }
+  };
+
+  const getBienes = async () => {
+    try {
+      setState((prev) => ({
+        ...prev,
+        sbnSobrante: null,
+        isSobrante: false,
+      }));
+
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE}/bienes/inventario?sbn=${state.buscar}`
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        handleSuccessfulBienesResponse(data);
+      } else {
+        handleFailedBienesResponse(response.status, data);
+      }
+    } catch (error) {
+      console.error("Error fetching bienes:", error);
+    }
+  };
+
+  const handleSuccessfulBienesResponse = (data) => {
+    if (!data.info) {
+      setState((prev) => ({ ...prev, isSobrante: true, bienes: null }));
+    } else {
+      setState((prev) => ({
+        ...prev,
+        isSobrante: data.info.tipo === "sobrante",
+        bienes: data.info,
+      }));
+    }
+  };
+
+  const handleFailedBienesResponse = async (status, data) => {
+
+    if (status === 403) {
+
+      message.warning(data.msg);
+    } else if (status === 404) {
+      await handleSobranteRegistration();
+    } else {
+      message.warning(data.msg);
+      setState((prev) => ({
+        ...prev,
+        isSobrante: false,
+        mostrarBoton: true,
+      }));
+    }
+  };
+
+  const handleSobranteRegistration = async () => {
+    setState((prev) => ({ ...prev, isSobrante: true, bienes: null }));
+    message.warning("El bien no fue encontrado, es un sobrante.");
+
+    const ubicacion = state.ubicaciones.find(
+      (item) => item.id === Number(localStorage.getItem("ubicacion_id"))
     );
 
-    if (response.ok) {
-      const info = await response.json(); // Obtener los datos
+    if (ubicacion) {
+      try {
+        const response = await fetch(
+          `${
+            process.env.REACT_APP_BASE
+          }/bienes/sobrante/sbn?id_usuario=${localStorage.getItem(
+            "usuario"
+          )}&id_sede=${localStorage.getItem("sede_id")}&id_ubicacion=${
+            ubicacion.tipo_ubicac
+          }${ubicacion.ubicac_fisica}`
+        );
 
-      // Si no hay bienes en la respuesta, entonces es sobrante
-      if (!info.info) {
-        setIsSobrante(true);
-        setBienes(null);
-      } else {
-        // Si es un bien tipo "sobrante", marcarlo como sobrante
-        if (info.info.tipo === "sobrante") {
-          setIsSobrante(true);
-          setSbnSobrante(info.sbn); // Opcional, dependiendo de si quieres almacenar el SBN de sobrante
-        } else {
-          // Restablecer el estado de sobrante si se encuentra un bien normal o activo
-          setIsSobrante(false);
-          setSbnSobrante(null);
-        }
-        setBienes(info.info); // Guardar los bienes en el estado si se encuentran
-      }
-    } else {
-      const info = await response.json(); // Obtener el mensaje de error
-      if (response.status === 403) {
-        message.warning(info.msg);
-      } else if (response.status === 404) {
-        // Aquí lo tratamos como un sobrante
-        setIsSobrante(true);
-        setBienes(null);
-        message.warning("El bien no fue encontrado, es un sobrante.");
-      } else {
-        setIsSobrante(false);
-        setMostrarBoton(true);
+        const data = await response.json();
+        setState((prev) => ({
+          ...prev,
+          sbnSobrante: response.ok ? data : null,
+        }));
+      } catch (error) {
+        setState((prev) => ({ ...prev, sbnSobrante: null }));
       }
     }
-  } catch (error) {
-    console.error("Error al obtener los bienes:", error);
-  }
-};
-
-
-  const getSedes = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BASE}/sedes`);
-
-    if (response.ok) {
-      const info = await response.json();
-      setSedes(info); // Guardar los bienes en el estado si la respuesta es exitosa
-    }
-  };
-  const getDependencias = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BASE}/dependencias`);
-
-    if (response.ok) {
-      const info = await response.json();
-      setDependencias(info); // Guardar los bienes en el estado si la respuesta es exitosa
-    }
-  };
-
-  const getUbicaciones = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BASE}/ubicaciones`);
-
-    if (response.ok) {
-      const info = await response.json();
-      setUbicaciones(info); // Guardar los bienes en el estado si la respuesta es exitosa
-    }
-  };
-
-  useEffect(() => {
-    if (ubicacionValues.sede_id && dependencias.length > 0) {
-      const filtered = dependencias.filter(
-        (item) => item.sede_id === ubicacionValues.sede_id
-      );
-      setFilteredDependencias(filtered); // Actualiza las dependencias filtradas
-    }
-
-    if (ubicacionValues.dependencia_id && ubicaciones.length > 0) {
-      const filtered = ubicaciones.filter(
-        (item) => item.dependencia_id === ubicacionValues.dependencia_id
-      );
-      setFilteredUbicaciones(filtered); // Actualiza las ubicaciones filtradas
-    }
-  }, [
-    ubicacionValues.sede_id,
-    ubicacionValues.dependencia_id,
-    dependencias,
-    ubicaciones,
-  ]);
-
-  const limpiarData = async () => {
-    setBienes(null);
   };
 
   const handleInputChange = (e) => {
-    const newValue = e.target.value;
-  
-    // Restablecer el estado de isSobrante y sbnSobrante si se está buscando un nuevo bien
-    setIsSobrante(false);
-    setSbnSobrante(null);
-  
-    if (
-      ubicacionValues.sede_id !== "" &&
-      ubicacionValues.dependencia_id !== "" &&
+    const hasRequiredFields =
+      ubicacionValues.sede_id &&
+      ubicacionValues.dependencia_id &&
       ubicacionValues.ubicacion_id &&
-      filteredTrabajador !== null
-    ) {
-      setBuscar(newValue);
-    } else {
-      message.warning(
+      state.filteredTrabajador;
+
+    if (!hasRequiredFields) {
+      console.warn(
         "Seleccione todos los campos de ubicación y el responsable."
       );
+      return;
     }
-  
-    if (e === "") {
-      setBuscar("");
-      setSbnSobrante(null);
-      setIsSobrante(false);
-    }
+
+    setState((prev) => ({
+      ...prev,
+      buscar: e?.target?.value || "",
+    }));
   };
-  
 
   const limpiarUbicaciones = () => {
-    localStorage.removeItem("sede_id"); // Eliminar del localStorage
-    localStorage.removeItem("dependencia_id"); // Eliminar del localStorage
-    localStorage.removeItem("ubicacion_id"); // Eliminar del localStorage
-    localStorage.removeItem("trabajador_id"); // Eliminar del localStorage
+    ["sede_id", "dependencia_id", "ubicacion_id", "trabajador_id"].forEach(
+      (key) => localStorage.removeItem(key)
+    );
 
     setUbicacionValues({
       sede_id: null,
       dependencia_id: null,
       ubicacion_id: null,
     });
-    setFilteredTrabajador(null);
-    setBuscar(null);
-    setBienes(null);
-    setIsSobrante(false);
+
+    setState((prev) => ({
+      ...prev,
+      filteredTrabajador: null,
+      buscar: null,
+      bienes: null,
+      isSobrante: false,
+    }));
   };
-
-  const getTrabajador = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BASE}/trabajadores/all`
-    );
-
-    if (response.ok) {
-      const info = await response.json();
-      setTrabajadores(info); // Guardar los bienes en el estado si la respuesta es exitosa
-    } else {
-      setTrabajadores([]);
-    }
-  };
-  const registrarSobrante = async () => {
-    const sede = localStorage.getItem("sede_id"); // Guardar en localStorage
-    const ubicacion = localStorage.getItem("ubicacion_id");
-    const usuario = localStorage.getItem("usuario");
-    const dependencia = localStorage.getItem("dependencia_id");
-    const trabajador = localStorage.getItem("trabajador_id"); // Eliminar del localStorage
-
-    if (
-      sede !== null &&
-      ubicacion !== null &&
-      dependencia !== null &&
-      trabajador !== null
-    ) {
-      setBienes(null);
-      setIsSobrante(true);
-      const ubi = ubicaciones.filter((item) => item.id == ubicacion);
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE
-        }/bienes/sobrante/sbn?id_usuario=${usuario}&id_sede=${sede}&id_ubicacion=${ubi?.at(-1).tipo_ubicac + "" + ubi?.at(-1).ubicac_fisica
-        }`
-      );
-      if (response.ok) {
-        const info = await response.json();
-        setSbnSobrante(info); // Guardar los bienes en el estado si la respuesta es exitosa
-        console.log(info);
-      } else {
-        setSbnSobrante(null);
-        setIsSobrante(false)
-      }
-    } else {
-      message.warning(
-        "Seleccione todo los campos de ubicación y el trabajador."
-      );
-    }
-  };
-
 
   return (
     <>
-      <Flex className="inventario-container" gap={"10px"}>
-        <Flex gap={"5px"} style={{ width: "100%" }}>
+      <Flex className="inventario-container" gap="10px">
+        <Flex gap="5px" style={{ width: "100%" }}>
           <Select
             placeholder="Sedes"
             style={{ width: "25%" }}
-            options={sedes.map((item) => {
-              return {
-                label: item.nombre,
-                value: item.id,
-              };
-            })}
-            value={ubicacionValues?.sede_id || undefined}
+            options={state.sedes.map((item) => ({
+              label: item.nombre,
+              value: item.id,
+            }))}
+            value={ubicacionValues.sede_id}
             showSearch
             allowClear
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
-            onChange={(e) => {
-              if (e) {
-                setUbicacionValues((value) => ({ ...value, sede_id: e }));
-                localStorage.setItem("sede_id", e); // Guardar en localStorage
+            onChange={(value) => {
+              if (value) {
+                setUbicacionValues((prev) => ({ ...prev, sede_id: value }));
+                localStorage.setItem("sede_id", value);
               } else {
-                setUbicacionValues((value) => ({
-                  ...value,
+                setUbicacionValues((prev) => ({
+                  ...prev,
                   sede_id: null,
                   ubicacion_id: null,
                   dependencia_id: null,
                 }));
-                localStorage.removeItem("sede_id"); // Guardar en localStorage
-                localStorage.removeItem("dependencia_id"); // Guardar en localStorage
-                localStorage.removeItem("ubicacion_id"); // Guardar en localStorage
+                ["sede_id", "dependencia_id", "ubicacion_id"].forEach((key) =>
+                  localStorage.removeItem(key)
+                );
               }
             }}
             popupMatchSelectWidth={false}
           />
+
           <Select
             placeholder="Dependencias"
             style={{ width: "25%" }}
-            options={filteredDependencias.map((item) => {
-              return {
-                label: item.nombre,
-                value: item.id,
-              };
-            })}
-            popupMatchSelectWidth={false}
-            allowClear
+            options={filteredDependencias.map((item) => ({
+              label: item.nombre,
+              value: item.id,
+            }))}
+            value={ubicacionValues.dependencia_id}
             showSearch
+            allowClear
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
-            onChange={(e) => {
-              if (e) {
-                setUbicacionValues((value) => ({
-                  ...value,
-                  dependencia_id: e,
+            onChange={(value) => {
+              if (value) {
+                setUbicacionValues((prev) => ({
+                  ...prev,
+                  dependencia_id: value,
                 }));
-                localStorage.setItem("dependencia_id", e); // Guardar en localStorage
-                localStorage.setItem("dependencia_tipo_ubicac", e); // Guardar en localStorage
+                localStorage.setItem("dependencia_id", value);
+                localStorage.setItem("dependencia_tipo_ubicac", value);
               } else {
-                setUbicacionValues((value) => ({
-                  ...value,
+                setUbicacionValues((prev) => ({
+                  ...prev,
                   dependencia_id: null,
                   ubicacion_id: null,
                 }));
@@ -371,63 +327,61 @@ const getBienes = async () => {
                 localStorage.removeItem("ubicacion_id");
               }
             }}
-            value={ubicacionValues?.dependencia_id || undefined}
+            popupMatchSelectWidth={false}
           />
+
           <Select
             placeholder="Ubicaciones"
             style={{ width: "25%" }}
-            options={filteredUbicaciones.map((item) => {
-              return {
-                label: item.nombre,
-                value: item.id,
-              };
-            })}
-            popupMatchSelectWidth={false}
-            allowClear
+            options={filteredUbicaciones.map((item) => ({
+              label: item.nombre,
+              value: item.id,
+            }))}
+            value={ubicacionValues.ubicacion_id}
             showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            onChange={(e) => {
-              if (e) {
-                setUbicacionValues((value) => ({ ...value, ubicacion_id: e }));
-                localStorage.setItem("ubicacion_id", e); // Guardar en localStorage
-              } else {
-                setUbicacionValues((value) => ({
-                  ...value,
-                  ubicacion_id: null,
-                }));
-                localStorage.removeItem("ubicacion_id"); // Guardar en localStorage
-              }
-            }}
-            value={ubicacionValues?.ubicacion_id || undefined}
-          />
-          <Select
-            placeholder="Responsable"
-            style={{ width: "25%" }}
-            options={trabajadores.map((item) => {
-              return {
-                label: item.nombre,
-                value: item.dni,
-              };
-            })}
-            popupMatchSelectWidth={false}
             allowClear
-            showSearch
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             onChange={(value) => {
-              // Asegurarnos de que el valor no sea nulo o indefinido
               if (value) {
-                // Buscar el trabajador seleccionado para obtener el nombre
-                const selectedTrabajador = trabajadores.find(
+                setUbicacionValues((prev) => ({
+                  ...prev,
+                  ubicacion_id: value,
+                }));
+                localStorage.setItem("ubicacion_id", value);
+              } else {
+                setUbicacionValues((prev) => ({
+                  ...prev,
+                  ubicacion_id: null,
+                }));
+                localStorage.removeItem("ubicacion_id");
+              }
+            }}
+            popupMatchSelectWidth={false}
+          />
+
+          <Select
+            placeholder="Responsable"
+            style={{ width: "25%" }}
+            options={state.trabajadores.map((item) => ({
+              label: item.nombre,
+              value: item.dni,
+            }))}
+            value={state.filteredTrabajador}
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={(value) => {
+              if (value) {
+                const selectedTrabajador = state.trabajadores.find(
                   (item) => item.dni === value
                 );
 
-                // Guardar tanto el nombre como el DNI en localStorage
                 if (selectedTrabajador) {
                   localStorage.setItem(
                     "trabajador_id",
@@ -438,43 +392,50 @@ const getBienes = async () => {
                     })
                   );
                 }
-
-                // Actualizar el estado con el DNI seleccionado
-                setFilteredTrabajador(value);
+                setState((prev) => ({
+                  ...prev,
+                  filteredTrabajador: value,
+                }));
               } else {
                 localStorage.removeItem("trabajador_id");
-                setFilteredTrabajador(null);
+                setState((prev) => ({
+                  ...prev,
+                  filteredTrabajador: null,
+                }));
               }
             }}
-            value={filteredTrabajador}
+            popupMatchSelectWidth={false}
           />
         </Flex>
       </Flex>
 
       <Flex
         className="inventario-container"
-        gap={"10px"}
+        gap="10px"
         style={{ marginTop: "10px" }}
       >
-        <Flex gap={"5px"} style={{ width: "100%" }}>
-          <Search
+        <Flex gap="5px" style={{ width: "100%" }}>
+          <Input
             placeholder="Buscar Bien"
             style={{ width: "250px" }}
-            onChange={(e) => {
-              if (e) {
-                handleInputChange(e);
-              } else {
-                setMostrarBoton(false);
-                setSbnSobrante(null)
-                setIsSobrante(false)
-              }
+            onChange={handleInputChange}
+            onClear={() => {
+              setState((prev) => ({
+                ...prev,
+                mostrarBoton: false,
+                bienes: null, // Clear bienes data
+                isSobrante: false, // Reset sobrante status
+                sbnSobrante: null, // Clear sobrante data
+                buscar: "", // Clear search value
+              }));
             }}
             allowClear
             ref={searchInputRef}
-            onKeyDown={handleKeyPress}
-            
+            value={state.buscar}
+            onKeyDown={(e) => e.key === "Enter" && getBienes()}
           />
-          {isSobrante ? (
+
+          {state.isSobrante ? (
             <Tag
               style={{
                 fontSize: "15px",
@@ -485,7 +446,7 @@ const getBienes = async () => {
             >
               Sobrante
             </Tag>
-          ) : bienes?.estado === "1" ? (
+          ) : state.bienes?.estado === "1" ? (
             <Tag
               style={{
                 fontSize: "18px",
@@ -496,7 +457,7 @@ const getBienes = async () => {
             >
               Activo
             </Tag>
-          ) : bienes?.estado === "2" ? (
+          ) : state.bienes?.estado === "2" ? (
             <Tag
               style={{
                 fontSize: "18px",
@@ -509,56 +470,69 @@ const getBienes = async () => {
             </Tag>
           ) : null}
         </Flex>
+
         <Button
           onClick={limpiarUbicaciones}
           style={{ backgroundColor: "#4DA362", color: "white" }}
         >
           Limpiar Filtros
         </Button>
-        {mostrarBoton && (
+
+        {/* {state.mostrarBoton && (
           <Button
-            onClick={registrarSobrante}
+            onClick={handleSobranteRegistration}
             style={{ backgroundColor: "#4DA362", color: "white" }}
           >
             Registrar Sobrante
           </Button>
-        )}
+        )} */}
       </Flex>
 
-      <Flex justify="flex-start" className="inventario-content" gap={"10px"}>
-        {Array.isArray(bienes) && bienes.length === 0 ? null : bienes === // No mostrar nada si bienes es un array vacío
-          null && isSobrante ? (
-          // Mostrar el formulario para bienes sobrantes
-          <div
-            style={{ width: "100%", height: "100%", backgroundColor: "white" }}
-          >
+      <Flex justify="flex-start" className="inventario-content" gap="10px">
+        {!Array.isArray(state.bienes) || state.bienes.length > 0 ? (
+          state.bienes === null && state.isSobrante ? (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "white",
+              }}
+            >
+              <FormularioBien
+                data={state.bienes}
+                setBienes={(bienes) =>
+                  setState((prev) => ({ ...prev, bienes }))
+                }
+                sbn={state.buscar}
+                sobrante={state.isSobrante}
+                ubicacion={ubicacionValues}
+                trabajador={state.filteredTrabajador}
+                setBuscar={(buscar) =>
+                  setState((prev) => ({ ...prev, buscar }))
+                }
+                searchInputRef={searchInputRef}
+                sbnSobrante={state.sbnSobrante}
+                setIsSobrante={(isSobrante) =>
+                  setState((prev) => ({ ...prev, isSobrante }))
+                }
+              />
+            </div>
+          ) : state.bienes !== null ? (
             <FormularioBien
-              data={bienes}
-              setBienes={setBienes}
-              sbn={buscar}
-              sobrante={isSobrante}
+              data={state.bienes}
+              setBienes={(bienes) => setState((prev) => ({ ...prev, bienes }))}
+              sbn={state.buscar}
+              sobrante={state.isSobrante}
               ubicacion={ubicacionValues}
-              trabajador={filteredTrabajador}
-              setBuscar={setBuscar}
+              trabajador={state.filteredTrabajador}
+              setBuscar={(buscar) => setState((prev) => ({ ...prev, buscar }))}
               searchInputRef={searchInputRef}
-              sbnSobrante={sbnSobrante}
-              setIsSobrante={setIsSobrante}
+              sbnSobrante={state.sbnSobrante}
+              setIsSobrante={(isSobrante) =>
+                setState((prev) => ({ ...prev, isSobrante }))
+              }
             />
-          </div>
-        ) : bienes !== null ? (
-          // Mostrar el formulario para bienes encontrados
-          <FormularioBien
-            data={bienes}
-            setBienes={setBienes}
-            sbn={buscar}
-            sobrante={isSobrante}
-            ubicacion={ubicacionValues}
-            trabajador={filteredTrabajador}
-            setBuscar={setBuscar}
-            searchInputRef={searchInputRef}
-            sbnSobrante={sbnSobrante}
-            setIsSobrante={setIsSobrante}
-          />
+          ) : null
         ) : null}
       </Flex>
     </>
