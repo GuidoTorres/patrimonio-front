@@ -21,7 +21,7 @@ const Faltantes = ({ setTitle }) => {
 
     if (response.ok) {
       const info = await response.json();
-      setBienes(info.bien); // Guardar los bienes en el estado si la respuesta es exitosa
+      setBienes(info.data); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
 
@@ -100,7 +100,6 @@ const Faltantes = ({ setTitle }) => {
         query.append(key, filters[key]);
       }
     });
-    query.append("inventariado", false);
 
     return query.toString();
   };
@@ -108,12 +107,12 @@ const Faltantes = ({ setTitle }) => {
   // Enviar la consulta a la API
   const handleSearch = async () => {
     const queryParams = buildQueryParams();
-    const url = `${process.env.REACT_APP_BASE}/bienes/consulta?${queryParams}`;
+    const url = `${process.env.REACT_APP_BASE}/bienes/faltantes?${queryParams}`;
 
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setBienes(data.bien);
+      setBienes(data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

@@ -16,6 +16,7 @@ const CodigoBarras = ({ values }) => {
             textAlign: "center",
             margin: "0",
             padding: "10px",
+            paddingTop:"5px",
             backgroundColor: "white",
           }}
         >
@@ -71,15 +72,15 @@ const CodigoBarras = ({ values }) => {
             </div>
           </div>
 
-          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <div
               style={{
                 transform: "rotate(-90deg)",
-                fontSize: "6px",
-                marginLeft: "-4px",
-                width: "10%",
-                flex: 1
-                
+                fontSize: "7px",
+                marginLeft: "-8px",
+                width: "40px",
+                height: "20px"
+
               }}
             >
               <strong>
@@ -90,25 +91,26 @@ const CodigoBarras = ({ values }) => {
                 </label>
               </strong>
             </div>
-            <div style={{flex:10}}>
+            <div style={{ width: "90%", marginRight: "10px" }}>
 
-            <Barcode
-              value={value.sbn}
-              width={1.30}
-              height={20}
-              fontSize={12}
-              marginTop={5}
-              marginBottom={5}
+              <Barcode
+                value={value.sbn}
+                width={1.35}
+                height={20}
+                fontSize={12}
+                marginTop={3}
+                marginBottom={5}
+
               />
-              </div>
+            </div>
 
           </div>
           <p
             style={{
               overflow: "hidden",
               fontFamily: "Helvetica",
-              fontSize: "8px",
-              margin: 0,
+              fontSize: "7.5px",
+              marginTop: "0",
               textRendering: "optimizeLegibility",
               height: "19.5px",
             }}

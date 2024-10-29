@@ -221,12 +221,14 @@ const Consultas = ({ setTitle }) => {
     const queryParams = buildQueryParams();
 
     // Añadir usuario_id al queryParams
-    const url = `${process.env.REACT_APP_BASE}/bienes/inventariados?${queryParams}&usuario_id=${usuario}`;
+    const url = `${process.env.REACT_APP_BASE}/bienes/consulta?${queryParams}&usuario_id=${usuario}`;
 
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setBienes(data.bien);
+      console.log(data);
+      
+      setBienes(data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
