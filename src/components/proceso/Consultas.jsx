@@ -9,6 +9,7 @@ import {
   Tag,
   Image,
   message,
+  Popconfirm,
 } from "antd";
 import { EditOutlined, CloseOutlined } from "@ant-design/icons";
 import ModalEditarBien from "../consultas/ModalEditarBien";
@@ -95,8 +96,6 @@ const Consultas = ({ setTitle }) => {
       message.error("Error");
       console.error("Error downloading Excel:", error);
     }
-
-
   };
 
   const columns = [
@@ -167,9 +166,19 @@ const Consultas = ({ setTitle }) => {
           <Button onClick={() => handleEditar(record)}>
             <EditOutlined />
           </Button>
-          <Button onClick={() => handleDelete(record)}>
-            <CloseOutlined />
-          </Button>
+
+          <Popconfirm
+            title="Eliminar Bien"
+            description=""
+            okText="Si"
+            cancelText="No"
+            onConfirm={() => handleDelete(record)}
+            
+          >
+            <Button>
+              <CloseOutlined />
+            </Button>
+          </Popconfirm>
         </Flex>
       ),
       align: "center",
@@ -227,7 +236,7 @@ const Consultas = ({ setTitle }) => {
       const response = await fetch(url);
       const data = await response.json();
       console.log(data);
-      
+
       setBienes(data.data);
     } catch (error) {
       console.error("Error fetching data:", error);

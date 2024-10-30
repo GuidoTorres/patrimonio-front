@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Select, Button, Input, Table, Descriptions, Tag, notification } from "antd";
+import {
+  Flex,
+  Select,
+  Button,
+  Input,
+  Table,
+  Descriptions,
+  Tag,
+  notification,
+  Popconfirm,
+} from "antd";
 
 const Faltantes = ({ setTitle }) => {
   useEffect(() => {
     setTitle("Consulta Bienes Faltantes");
-    getBienes();
     getSedes();
     getUbicaciones();
   }, []);
@@ -13,17 +22,6 @@ const Faltantes = ({ setTitle }) => {
   const [sedes, setSedes] = useState([]);
   const [ubicaciones, setUbicaciones] = useState([]);
   const [filters, setFilters] = useState([]);
-
-  const getBienes = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BASE}/bienes/faltantes`
-    );
-
-    if (response.ok) {
-      const info = await response.json();
-      setBienes(info.data); // Guardar los bienes en el estado si la respuesta es exitosa
-    }
-  };
 
   const getSedes = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/sedes`);
@@ -73,16 +71,7 @@ const Faltantes = ({ setTitle }) => {
       dataIndex: "serie",
       align: "center",
     },
-    {
-      title: "SITUACIÓN",
-      render: (_, record) =>
-        record.situacion ? (
-          <Tag color="blue">Uso</Tag>
-        ) : (
-          <Tag color="volcano">Desuso</Tag>
-        ),
-      align: "center",
-    },
+
   ];
   const handleInputChange = (name, value) => {
     setFilters({
@@ -130,17 +119,15 @@ const Faltantes = ({ setTitle }) => {
       {
         key: "2",
         label: "Observaciones",
-        children: record.observacion
-          ? record.observacion
-          : "SIN OBSERVACIONES",
+        children: record.observacion ? record.observacion : "SIN OBSERVACIONES",
       },
       {
         key: "3",
         label: "Cod. Ubicación",
         children:
-          record?.ubicacione?.tipo_ubicac +
+          record?.ubicacione?.tipo_ubicac ? record?.ubicacione?.tipo_ubicac : "" +
           "" +
-          record?.ubicacione?.ubicac_fisica,
+          record?.ubicacione?.ubicac_fisica ? record?.ubicacione?.ubicac_fisica : "" ,
       },
       {
         key: "4",
@@ -155,7 +142,7 @@ const Faltantes = ({ setTitle }) => {
       {
         key: "5",
         label: "Responsable",
-        children: record?.trabajadore?.nombre,
+        children: record?.usuario,
       },
     ];
 
@@ -164,7 +151,6 @@ const Faltantes = ({ setTitle }) => {
 
   const LimpiarBusqueda = async () => {
     setFilters([]);
-    getBienes();
   };
 
   const registrarFaltantes = async () => {
@@ -186,8 +172,7 @@ const Faltantes = ({ setTitle }) => {
     // Manejo de la respuesta del servidor
     if (response.ok) {
       const data = await response.json();
-      notification.success(data.msg)
-      getBienes()
+      notification.success(data.msg);
     } else {
       console.error("Error al actualizar los faltantes");
     }
@@ -225,6 +210,7 @@ const Faltantes = ({ setTitle }) => {
                 value: item.id,
               };
             })}
+            popupMatchSelectWidth
           />
           <Select
             placeholder="Ubicaciones"
@@ -246,6 +232,7 @@ const Faltantes = ({ setTitle }) => {
             name="ubicacion_id"
             value={filters.ubicacion_id}
             onChange={(e) => handleInputChange("ubicacion_id", e)}
+            popupMatchSelectWidth
           />
           <Input
             placeholder="Usuarios"
@@ -322,12 +309,19 @@ const Faltantes = ({ setTitle }) => {
               {" "}
               Limpiar Busqueda
             </Button>
-            {/* <Button
-              style={{ backgroundColor: "#4DA362", color: "white" }}
-              onClick={registrarFaltantes}
+            <Popconfirm
+              title="Registrar Faltantes"
+              description="Estas seguro de registrar los faltantes de la tabla?"
+              okText="Si"
+              cancelText="No"
+              onConfirm={registrarFaltantes}
             >
-              Registrar Faltantes
-            </Button> */}
+              <Button
+                style={{ backgroundColor: "#4DA362", color: "white" }}
+              >
+                Registrar Faltantes
+              </Button>{" "}
+            </Popconfirm>
           </Flex>
         </Flex>
       </div>

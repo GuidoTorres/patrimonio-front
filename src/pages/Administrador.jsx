@@ -202,7 +202,7 @@ const Administrador = () => {
                     </ProtectedRoute>
                   }
                 />
-                <Route
+                {/* <Route
                   path="/configuracion"
                   element={
                     <ProtectedRoute>
@@ -241,7 +241,7 @@ const Administrador = () => {
                       <Ubicaciones setTitle={setTitle} />
                     </ProtectedRoute>
                   }
-                />
+                /> */}
                 <Route
                   path="/reportes"
                   element={
