@@ -108,6 +108,8 @@ const chunkData = (data, firstPageSize, subsequentPageSize) => {
 };
 
 const CargoPDF = ({ registros }) => {
+  console.log();
+  
   const registrosPorPagina1 = 20; // Número de registros por página para el primer formato
   const registrosPorPagina2 = 6; // Número de registros por página para el segundo formato
 

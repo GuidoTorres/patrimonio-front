@@ -47,9 +47,11 @@ const TarjetasCargo = ({ setTitle }) => {
   // Función para manejar el cambio de trabajador
   const handleTrabajadorChange = async () => {
     // Hacer una solicitud para obtener las sedes, dependencias y ubicaciones según el trabajador seleccionado
+    console.log("prueba");
+    const usuario = localStorage.getItem("usuario");
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BASE}/bienes/trabajadores/sedes?dni=${dni}`
+        `${process.env.REACT_APP_BASE}/bienes/trabajadores/sedes?dni=${dni}&usuario=${usuario}`
       );
       const data = await response.json();
       setData(data);
@@ -102,17 +104,20 @@ const TarjetasCargo = ({ setTitle }) => {
 
     getEtiquetas(ubicacionId);
   };
-  console.log(ids);
 
   useEffect(() => {
-    if (dni?.length === 8) {
+    if (dni?.length == 8) {
       handleTrabajadorChange();
     }
   }, [dni]);
 
   const getEtiquetas = async (ubicacion) => {
-    let url = `${process.env.REACT_APP_BASE}/bienes/etiquetas?`; // URL base
+    const usuario = localStorage.getItem("usuario");
 
+    let url = `${process.env.REACT_APP_BASE}/bienes/etiquetas?`; // URL base
+    if (usuario) {
+      url += `usuario=${usuario}&`;
+    }
     if (dni) {
       url += `dni=${dni}&`;
     }

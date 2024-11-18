@@ -20,10 +20,13 @@ const Consultas = ({ setTitle }) => {
     getSedes();
     getUbicaciones();
     getTrabajador();
+    getDependencias()
   }, []);
 
   const [bienes, setBienes] = useState([]);
   const [sedes, setSedes] = useState([]);
+  const [dependencias, setDependencias] = useState([]);
+
   const [ubicaciones, setUbicaciones] = useState([]);
   const [filters, setFilters] = useState([]);
   const [trabajadores, setTrabajadores] = useState([]);
@@ -50,6 +53,14 @@ const Consultas = ({ setTitle }) => {
     if (response.ok) {
       const info = await response.json();
       setSedes(info); // Guardar los bienes en el estado si la respuesta es exitosa
+    }
+  };
+  const getDependencias = async () => {
+    const response = await fetch(`${process.env.REACT_APP_BASE}/dependencias`);
+
+    if (response.ok) {
+      const info = await response.json();
+      setDependencias(info); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
   const getUbicaciones = async () => {
@@ -173,7 +184,7 @@ const Consultas = ({ setTitle }) => {
             okText="Si"
             cancelText="No"
             onConfirm={() => handleDelete(record)}
-            
+
           >
             <Button>
               <CloseOutlined />
@@ -318,11 +329,12 @@ const Consultas = ({ setTitle }) => {
           <Select
             placeholder="Sedes"
             style={{
-              width: "33%",
+              width: "25%",
             }}
             name="sede_id"
             value={filters.sede_id}
             showSearch
+            popupMatchSelectWidth={false}
             optionFilterProp="children"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -336,10 +348,31 @@ const Consultas = ({ setTitle }) => {
               };
             })}
           />
+          {/* <Select
+            style={{
+              width: "25%",
+            }}
+            placeholder="Dependencias"
+            className="form-item-input"
+            onChange={(e) => handleInputChange("depedencia_id", e)}
+            showSearch
+            popupMatchSelectWidth={false}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            allowClear
+            options={dependencias?.map((item) => {
+              return {
+                value: item?.id,
+                label: item?.nombre,
+              };
+            })}
+          /> */}
           <Select
             placeholder="Ubicaciones"
             style={{
-              width: "33%",
+              width: "25%",
             }}
             options={ubicaciones.map((item) => {
               return {
@@ -349,6 +382,7 @@ const Consultas = ({ setTitle }) => {
             })}
             showSearch
             optionFilterProp="children"
+            popupMatchSelectWidth={false}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
@@ -357,15 +391,6 @@ const Consultas = ({ setTitle }) => {
             value={filters.ubicacion_id}
             onChange={(e) => handleInputChange("ubicacion_id", e)}
           />
-          {/* <Input
-            placeholder="Dni Trabajador"
-            style={{
-              width: "33%",
-            }}
-            allowClear
-            value={filters.dni}
-            onChange={(e) => handleInputChange("dni", e.target.value)}
-          /> */}
           <Select
             placeholder="Trabajador"
             className="form-item-input"
@@ -381,7 +406,7 @@ const Consultas = ({ setTitle }) => {
             })}
             value={filters.dni}
             style={{
-              width: "33%",
+              width: "25%",
             }}
           />
         </Flex>
