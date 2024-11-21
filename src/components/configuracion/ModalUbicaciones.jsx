@@ -40,15 +40,23 @@ const ModalUbicaciones = ({ modal, setModal, edit, setEdit, ubicaciones }) => {
   };
 
   const onFinish = async (values) => {
+    const usuario = localStorage.getItem("usuario");
+
+    // Agregar el usuario_id al objeto values
+    const dataToSend = {
+      ...values,
+      usuario_id: parseInt(usuario) // Convertir a número si es necesario
+    };
+
     if (!edit) {
       const response = await fetch(
-        `${process.env.REACT_APP_BASE}/ubicaciones`,
+        `${process.env.REACT_APP_BASE}/ubicaciones`,  // Quité el query param porque ahora va en el body
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values), // Enviar los valores del formulario
+          body: JSON.stringify(dataToSend), // Enviar los valores con el usuario_id incluido
         }
       );
       const data = await response.json();
@@ -72,7 +80,7 @@ const ModalUbicaciones = ({ modal, setModal, edit, setEdit, ubicaciones }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values), // Enviar los valores del formulario
+          body: JSON.stringify(dataToSend), // También incluir el usuario_id en el update
         }
       );
       const data = await response.json();
@@ -89,7 +97,7 @@ const ModalUbicaciones = ({ modal, setModal, edit, setEdit, ubicaciones }) => {
         });
       }
     }
-  };
+};
   useEffect(() => {
     if (formValues.sede_id && dependencias.length > 0) {
       const filtered = dependencias.filter(

@@ -41,9 +41,9 @@ const Sidebar = () => {
     } else if (path.startsWith("/consulta")) {
       setSelectedKey("/consulta");
     }
-    //  else if (path.startsWith("/configuracion")) {
-    //   setSelectedKey("/configuracion");
-    // } 
+    else if (path.startsWith("/configuracion")) {
+      setSelectedKey("/configuracion");
+    }
     else if (path.startsWith("/reportes")) {
       setSelectedKey("/reportes");
     } else {
@@ -77,12 +77,12 @@ const Sidebar = () => {
       label: "Consultas",
       permiso: "consultas",
     },
-    // {
-    //   key: "/configuracion",
-    //   icon: <ToolOutlined />,
-    //   label: "Configuración",
-    //   permiso: "configuracion",
-    // },
+    {
+      key: "/configuracion",
+      icon: <ToolOutlined />,
+      label: "Configuración",
+      permiso: "configuracion",
+    },
     {
       key: "/reportes",
       icon: <AreaChartOutlined />,

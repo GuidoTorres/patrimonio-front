@@ -21,7 +21,7 @@ const MenuConfiguracion = ({ setTitle }) => {
         gap: "20px",
       }}
     >
-      <section
+      {/* <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/configuracion/usuarios")}
       >
@@ -90,7 +90,7 @@ const MenuConfiguracion = ({ setTitle }) => {
           {" "}
           <strong>Inventariadores</strong>
         </p>
-      </section>
+      </section> */}
       <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/configuracion/ubicaciones")}

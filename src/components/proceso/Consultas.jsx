@@ -74,9 +74,10 @@ const Consultas = ({ setTitle }) => {
 
   const downloadExcelInventariados = async () => {
     const usuario = localStorage.getItem("usuario");
+    const queryParams = buildQueryParams();
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BASE}/bienes/inventariados/excel?usuario_id=${usuario}`,
+        `${process.env.REACT_APP_BASE}/bienes/inventariados/excel?${queryParams}&usuario_id=${usuario}`,
         {
           method: "GET",
           headers: {
@@ -93,7 +94,7 @@ const Consultas = ({ setTitle }) => {
         // Crear un enlace para descargar el archivo
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "BienesSIGA.xlsx"); // El nombre del archivo que se descargará
+        link.setAttribute("download", "Bienes.xlsx"); // El nombre del archivo que se descargará
         document.body.appendChild(link);
         link.click();
 

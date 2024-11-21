@@ -170,13 +170,12 @@ const FormularioBien = ({
 
     if (response.ok) {
       const info = await response.json();
-      console.log(info);
-      
+
       setColores(info.data); // Guardar los bienes en el estado si la respuesta es exitosa
     }
   };
 
-   
+
   const getDependencias = async () => {
     const response = await fetch(`${process.env.REACT_APP_BASE}/dependencias`);
 
@@ -293,7 +292,7 @@ const FormularioBien = ({
       });
     }
   };
-  
+
   useEffect(() => {
     const storedTrabajador = localStorage.getItem("trabajador_id");
 
@@ -681,16 +680,19 @@ const FormularioBien = ({
         </div>
         <Form.Item>
           <Flex justify="end">
-            <Button
-              htmlType="submit"
-              style={{
-                backgroundColor: " #4DA362 ",
-                color: "white",
-                marginTop: "10px",
-              }}
-            >
-              Guardar
-            </Button>
+            {data?.estado !== "2" ?
+              <Button
+                htmlType="submit"
+                style={{
+                  backgroundColor: " #4DA362 ",
+                  color: "white",
+                  marginTop: "10px",
+                }}
+              >
+                Guardar
+              </Button> : null
+
+            }
           </Flex>
         </Form.Item>
       </Form>
