@@ -21,6 +21,30 @@ const MenuConfiguracion = ({ setTitle }) => {
         gap: "20px",
       }}
     >
+            <section
+        style={{ height: "250px", cursor: "pointer" }}
+        onClick={() => navigate("/configuracion/trabajadores")}
+      >
+        <div
+          style={{
+            borderRadius: "50%",
+            boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+            height: "200px",
+            width: "200px",
+            backgroundColor: "white",
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <UsergroupAddOutlined style={{ fontSize: "80px" }}/>
+        </div>
+        <p htmlFor="" style={{ marginTop: "10px", fontSize: "15px" }}>
+          {" "}
+          <strong>Trabajadores</strong>
+        </p>
+      </section>
       {/* <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/configuracion/usuarios")}

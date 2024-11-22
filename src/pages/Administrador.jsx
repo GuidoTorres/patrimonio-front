@@ -25,6 +25,7 @@ import Jefes from "../components/configuracion/Jefes";
 import Inventariadores from "../components/configuracion/Inventariadores";
 import Ubicaciones from "../components/configuracion/Ubicaciones";
 import Faltantes from "../components/consultas/Faltantes";
+import Trabajadores from "../components/configuracion/Trabajadores";
 
 const { Sider, Header, Content } = Layout;
 
@@ -227,10 +228,10 @@ const Administrador = () => {
                   }
                 />
                 <Route
-                  path="/configuracion/inventariadores"
+                  path="/configuracion/trabajadores"
                   element={
                     <ProtectedRoute>
-                      <Inventariadores setTitle={setTitle} />
+                      <Trabajadores setTitle={setTitle} />
                     </ProtectedRoute>
                   }
                 />

@@ -57,7 +57,7 @@ const Ubicaciones = ({ setTitle }) => {
         "" +
         record?.ubicac_fisica +
         " - " +
-        record?.ubicacion,
+        record?.nombre,
       align: "center",
     },
 
