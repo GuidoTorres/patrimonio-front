@@ -616,7 +616,7 @@ const FormularioBien = ({
                 ]}
                 className="form-item-codigo"
               >
-                <Input allowClear disabled={data?.estado === "2"} />
+                <Input allowClear disabled={true} />
               </Form.Item>
             </Flex>
           </div>
