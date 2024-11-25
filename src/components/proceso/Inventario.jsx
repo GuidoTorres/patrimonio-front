@@ -40,11 +40,11 @@ const Inventario = ({ setTitle }) => {
   });
 
   // Computed values instead of using state
-  const filteredDependencias = state.dependencias.filter(
+  const filteredDependencias = state?.dependencias?.filter(
     (item) => item.sede_id === ubicacionValues.sede_id
   );
 
-  const filteredUbicaciones = state.ubicaciones.filter(
+  const filteredUbicaciones = state?.ubicaciones?.filter(
     (item) => item.dependencia_id === ubicacionValues.dependencia_id
   );
 
