@@ -113,10 +113,9 @@ const CargoPDF = ({ registros }) => {
   const registrosPorPagina1 = 20; // Número de registros por página para el primer formato
   const registrosPorPagina2 = 6; // Número de registros por página para el segundo formato
   
-  const filterPagina= registros.filter(item => item.estado == "2")
   // Paginación de los datos para cada formato
   const paginatedData1 = chunkData(
-    filterPagina,
+    registros,
     registrosPorPagina1,
     registrosPorPagina1
   );
