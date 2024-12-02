@@ -26,6 +26,7 @@ import Inventariadores from "../components/configuracion/Inventariadores";
 import Ubicaciones from "../components/configuracion/Ubicaciones";
 import Faltantes from "../components/consultas/Faltantes";
 import Trabajadores from "../components/configuracion/Trabajadores";
+import MigrarBienes from "../components/configuracion/MigrarBienes";
 
 const { Sider, Header, Content } = Layout;
 
@@ -240,6 +241,14 @@ const Administrador = () => {
                   element={
                     <ProtectedRoute>
                       <Ubicaciones setTitle={setTitle} />
+                    </ProtectedRoute>
+                  }
+                />
+                                <Route
+                  path="/configuracion/migrar"
+                  element={
+                    <ProtectedRoute>
+                      <MigrarBienes setTitle={setTitle} />
                     </ProtectedRoute>
                   }
                 />
