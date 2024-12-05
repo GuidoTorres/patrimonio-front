@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://localhost:3006",
   "dependencies": {
+    "@ag-media/react-pdf-table": "^2.0.0",
     "@react-pdf/renderer": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

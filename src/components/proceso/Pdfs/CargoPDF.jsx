@@ -9,12 +9,16 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import dayjs from "dayjs";
-import img from "../../../assets/logo_autodema.png";
-import img2 from "../../../assets/gobierno.png";
+import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
+    fontSize: 7,
+    position: "relative",
+  },
+  page2: {
+    padding: 10,
     fontSize: 7,
     position: "relative",
   },
@@ -54,8 +58,13 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   tableCell: {
-    margin: 5,
+    margin: 2,
     textAlign: "center",
+  },
+  tableCell2: {
+    margin: 2,
+    textAlign: "center",
+    fontSize: "6px",
   },
   footer: {
     position: "absolute",
@@ -109,10 +118,10 @@ const chunkData = (data, firstPageSize, subsequentPageSize) => {
 
 const CargoPDF = ({ registros }) => {
   console.log();
-  
+
   const registrosPorPagina1 = 20; // Número de registros por página para el primer formato
-  const registrosPorPagina2 = 6; // Número de registros por página para el segundo formato
-  
+  const registrosPorPagina2 = 24; // Número de registros por página para el segundo formato
+
   // Paginación de los datos para cada formato
   const paginatedData1 = chunkData(
     registros,
@@ -141,7 +150,10 @@ const CargoPDF = ({ registros }) => {
                 }}
               >
                 <View style={{ flex: 2, alignItems: "flex-start" }}>
-                  <Image src={`${process.env.PUBLIC_URL}/assets/logo_autodema.png`} style={{ height: "50px", width: "80px" }} />
+                  <Image
+                    src={`${process.env.PUBLIC_URL}/assets/logo_autodema.png`}
+                    style={{ height: "50px", width: "80px" }}
+                  />
                 </View>
                 <View
                   style={{ flex: 4, alignItems: "center", marginTop: "20px" }}
@@ -149,10 +161,12 @@ const CargoPDF = ({ registros }) => {
                   <Text style={{ fontSize: "12px" }}>
                     COMISIÓN DE INVENTARIO BIENES MUEBLES
                   </Text>
-
                 </View>
                 <View style={{ flex: 2, alignItems: "flex-end" }}>
-                  <Image src={`${process.env.PUBLIC_URL}/assets/gobierno.png`} style={{ height: "50px", width: "80px" }} />
+                  <Image
+                    src={`${process.env.PUBLIC_URL}/assets/gobierno.png`}
+                    style={{ height: "50px", width: "80px" }}
+                  />
 
                   <Text>{pageIndex + 1 + "/" + paginatedData1.length}</Text>
                   <Text>{dayjs().format("DD/MM/YYYY")}</Text>
@@ -169,7 +183,9 @@ const CargoPDF = ({ registros }) => {
               >
                 <View style={{ flex: 4, alignItems: "center" }}>
                   <Text style={{ fontSize: "12px" }}>TARJETA DE CARGO</Text>
-                  <Text style={{ fontSize: "11px", marginTop:"5px" }}>{"EJERCICIO" + " " + dayjs().format("YYYY")}</Text>
+                  <Text style={{ fontSize: "11px", marginTop: "5px" }}>
+                    {"EJERCICIO" + " " + dayjs().format("YYYY")}
+                  </Text>
                 </View>
               </View>
 
@@ -390,17 +406,24 @@ const CargoPDF = ({ registros }) => {
                 <View style={styles.footerText}>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     El usuario declara haber mostrado todos los bienes que se
-                    encuentran bajo responsabilidad y no contar con mas bienes materia de inventario.
+                    encuentran bajo responsabilidad y no contar con mas bienes
+                    materia de inventario.
                   </Text>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     El usuario es responsable de la permanencia y conservación
-                    de cada uno de los bienes muebles descritos, recomendando tomar las precauciones del caso para evitar, sustracciones, deterioro,etc.
+                    de cada uno de los bienes muebles descritos, recomendando
+                    tomar las precauciones del caso para evitar, sustracciones,
+                    deterioro,etc.
                   </Text>
                   <Text style={{ fontSize: "6px", width: "100%" }}>
                     Cualquier necesidad de traslado del bien mueble dentro o
-                    fuera del local de la entidad, es previamente comunicado oportunamente al encargado de la Oficina de Control Patrimonial bajo responsabilidad; de 
-                    conformidad con la DIRECTIVA, Directiva N° 0006-2021-EF/54.01, aprobada con RESOLUCIÓN DIRECTORAL N° 0015-2021-EF/54.01 "Directiva para la gestión de bienes
-                    muebles patrimoniales en el marco del Sistema Nacional de Abastecimiento".
+                    fuera del local de la entidad, es previamente comunicado
+                    oportunamente al encargado de la Oficina de Control
+                    Patrimonial bajo responsabilidad; de conformidad con la
+                    DIRECTIVA, Directiva N° 0006-2021-EF/54.01, aprobada con
+                    RESOLUCIÓN DIRECTORAL N° 0015-2021-EF/54.01 "Directiva para
+                    la gestión de bienes muebles patrimoniales en el marco del
+                    Sistema Nacional de Abastecimiento".
                   </Text>
                 </View>
               </View>
@@ -410,7 +433,7 @@ const CargoPDF = ({ registros }) => {
       ))}
       {/* Segundo documento o sección diferente */}
       {paginatedData2.map((pagina, pageIndex) => (
-        <Page size={[841.89, 595.28]} style={styles.page}>
+        <Page style={styles.page2}>
           <View style={{ width: "100%", marginTop: "20px" }}>
             <Text style={{ fontSize: 14, textAlign: "center" }}>
               FICHA DE LEVANTAMIENTO DE INFORMACIÓN
@@ -463,7 +486,7 @@ const CargoPDF = ({ registros }) => {
             </View>
           </View>
 
-          <View style={{ width: "100%", marginTop: "20px", height: "50%" }}>
+          <View style={{ width: "100%", marginTop: "20px", height: "80%" }}>
             {/* Cabecera de la tabla */}
             <View
               style={{
@@ -478,7 +501,7 @@ const CargoPDF = ({ registros }) => {
             >
               <View
                 style={{
-                  width: "25px",
+                  width: "20px",
                   display: "flex",
                   height: "100%",
                   justifyContent: "center",
@@ -519,6 +542,7 @@ const CargoPDF = ({ registros }) => {
                   style={{
                     width: "100%",
                     display: "flex",
+
                     flexDirection: "row",
                     height: "25px",
                     borderTopWidth: "1px",
@@ -526,9 +550,11 @@ const CargoPDF = ({ registros }) => {
                 >
                   <View
                     style={{
-                      width: "8%",
-                      height: "25px",
+                      width: "10%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
@@ -542,20 +568,29 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "18%",
-                      margin: "0",
+                      width: "22%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    <Text style={{ textAlign: "center", fontSize: "7px" }}>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: "7px",
+                      }}
+                    >
                       DESCRIPCIÓN
                     </Text>
                   </View>
                   <View
                     style={{
-                      width: "7%",
-                      height: "25px",
+                      width: "9%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text style={{ textAlign: "center", fontSize: "7px" }}>
@@ -564,9 +599,11 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "7%",
-                      height: "25px",
+                      width: "12%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text style={{ textAlign: "center", fontSize: "7px" }}>
@@ -576,16 +613,17 @@ const CargoPDF = ({ registros }) => {
 
                   <View
                     style={{
-                      width: "6%",
-                      height: "25px",
+                      width: "8%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontSize: "7px",
-                        height: "100%",
                       }}
                     >
                       COLOR
@@ -593,16 +631,17 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "8%",
-                      height: "25px",
+                      width: "11%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontSize: "7px",
-                        height: "100%",
                       }}
                     >
                       SERIE
@@ -610,16 +649,17 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "16%",
-                      height: "25px",
+                      width: "15%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontSize: "7px",
-                        height: "100%",
                       }}
                     >
                       DETALLES
@@ -628,16 +668,17 @@ const CargoPDF = ({ registros }) => {
 
                   <View
                     style={{
-                      width: "10%",
-                      height: "25px",
+                      width: "7%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontSize: "7px",
-                        height: "100%",
                       }}
                     >
                       SITUACIÓN
@@ -645,31 +686,20 @@ const CargoPDF = ({ registros }) => {
                   </View>
                   <View
                     style={{
-                      width: "10%",
-                      height: "25px",
+                      width: "6%",
                       borderRightWidth: "1px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontSize: "7px",
-                        height: "100%",
                       }}
                     >
                       ESTADO
-                    </Text>
-                  </View>
-                  <View style={{ width: "10%", height: "25px" }}>
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        fontSize: "7px",
-                        height: "100%",
-                        borderWidth: "0",
-                      }}
-                    >
-                      OBSERVACIÓN
                     </Text>
                   </View>
                 </View>
@@ -683,14 +713,96 @@ const CargoPDF = ({ registros }) => {
               >
                 <View
                   style={{
-                    width: "26px",
+                    width: "21px",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
                     borderLeftWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>
+                  <Text style={[styles.tableCell2]}>
                     {pageIndex * registrosPorPagina2 + index + 1}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "10%",
+                    borderRightWidth: "1px",
+                    borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
+                    {registro?.sbn}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "22%",
+                    borderRightWidth: "1px",
+                    borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
+                    {registro?.descripcion}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "9%",
+                    borderRightWidth: "1px",
+                    borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
+                    {registro?.marca}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "12%",
+                    borderRightWidth: "1px",
+                    borderBottomWidth: "1px",
+                    height: "auto", // Permitir altura dinámica
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    overflow: "hidden",
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.tableCell2,
+                      {
+                        width: "100%",
+                        fontSize: "6px",
+                        height: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      },
+                    ]}
+                  >
+                    {registro?.modelo}
                   </Text>
                 </View>
                 <View
@@ -698,86 +810,105 @@ const CargoPDF = ({ registros }) => {
                     width: "8%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
+                    height: "auto", // Permitir altura dinámica
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>{registro?.sbn}</Text>
-                </View>
-                <View
-                  style={{
-                    width: "18%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>
-                    {registro?.descripcion}
+                  <Text
+                    style={[
+                      styles.tableCell2,
+                      {
+                        width: "100%",
+                        fontSize: "6px",
+                        height: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      },
+                    ]}
+                  >
+                    {registro?.color}
                   </Text>
                 </View>
                 <View
                   style={{
-                    width: "7%",
+                    width: "11%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
+                    height: "auto", // Permitir altura dinámica
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>{registro?.marca}</Text>
+                  <Text
+                    style={[
+                      styles.tableCell2,
+                      {
+                        width: "100%",
+                        fontSize: "6px",
+                        height: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      },
+                    ]}
+                  >
+                    {registro?.serie}
+                  </Text>
                 </View>
+                <View
+                  style={{
+                    width: "15%",
+                    borderRightWidth: "1px",
+                    borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
+                    {registro?.detalles}
+                  </Text>
+                </View>
+
                 <View
                   style={{
                     width: "7%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>{registro?.modelo}</Text>
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
+                    {registro.situacion ? "Uso" : "Desuso"}
+                  </Text>
                 </View>
                 <View
                   style={{
                     width: "6%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>{registro?.color}</Text>
-                </View>
-                <View
-                  style={{
-                    width: "8%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>{registro?.serie}</Text>
-                </View>
-                <View
-                  style={{
-                    width: "16%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>{registro?.detalles}</Text>
-                </View>
-
-                <View
-                  style={{
-                    width: "10%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>
-                    {registro.situacion ? "Uso" : "Desuso"}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: "10%",
-                    borderRightWidth: "1px",
-                    borderBottomWidth: "1px",
-                  }}
-                >
-                  <Text style={[styles.tableCell]}>
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
                     {" "}
                     {registro?.estado_patrimonial == "1"
                       ? "B"
@@ -794,80 +925,88 @@ const CargoPDF = ({ registros }) => {
                       : ""}
                   </Text>
                 </View>
-                <View
+                {/* <View
                   style={{
-                    width: "10%",
+                    width: "8%",
                     borderRightWidth: "1px",
                     borderBottomWidth: "1px",
+                    height: "auto",
+                    minHeight: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={[styles.tableCell]}>
+                  <Text style={[styles.tableCell2, { flexWrap: "wrap" }]}>
                     {registro?.observacion}
                   </Text>
-                </View>
+                </View> */}
               </View>
             ))}
-          </View>
-          <View>
-            <Text>(1) N=Nuevo B=Bueno R=Regular M=Malo X=RAEE Y=Chatarra</Text>
-            <Text>
-              (2) Es estado es consignado en base a la siguiente escala: Bueno,
-              Regular, Malo, Chatarra y RAEE. En caso de semovientes, utilizar
-              escala de acuerdo a su naturalez.
-            </Text>
+            <View style={{ marginTop: "5px" }}>
+              <Text>
+                (1) N=Nuevo B=Bueno R=Regular M=Malo X=RAEE Y=Chatarra
+              </Text>
+              <Text>
+                (2) Es estado es consignado en base a la siguiente escala:
+                Bueno, Regular, Malo, Chatarra y RAEE. En caso de semovientes,
+                utilizar escala de acuerdo a su naturalez.
+              </Text>
 
-            <Text
-              style={{
-                textDecoration: "underline",
-                fontSize: "10px",
-                marginTop: "4px",
-              }}
-            >
-              Consideraciones:
-            </Text>
-            <Text style={{ marginTop: "2px" }}>
-              - El usuario declara haber mostrado todos los bienes muebles que
-              se encuentran bajo su responsabilidad y no contar con más bienes
-              muebles materia de inventario.
-            </Text>
-            <Text>
-              - El usuario es responsable de la permanencia y conservación de
-              cada uno de los bienes muebles descritos, recomendándose tomar las
-              precauciones del caso para evitar sutracciones, deterioros,etc.
-            </Text>
-            <Text style={{ marginBottom: "20px" }}>
-              - Cualquier necesidad de traslado del bien mueble dentro o fuera
-              del local de la Entidad u Organización de Entidad, es preciamente
-              comunicado al encargado de la OCP.
-            </Text>
+              <Text
+                style={{
+                  textDecoration: "underline",
+                  fontSize: "10px",
+                  marginTop: "4px",
+                }}
+              >
+                Consideraciones:
+              </Text>
+              <Text style={{ marginTop: "2px" }}>
+                - El usuario declara haber mostrado todos los bienes muebles que
+                se encuentran bajo su responsabilidad y no contar con más bienes
+                muebles materia de inventario.
+              </Text>
+              <Text>
+                - El usuario es responsable de la permanencia y conservación de
+                cada uno de los bienes muebles descritos, recomendándose tomar
+                las precauciones del caso para evitar sutracciones,
+                deterioros,etc.
+              </Text>
+              <Text style={{ marginBottom: "20px" }}>
+                - Cualquier necesidad de traslado del bien mueble dentro o fuera
+                del local de la Entidad u Organización de Entidad, es
+                preciamente comunicado al encargado de la OCP.
+              </Text>
 
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                flexDirection: "row",
-                marginTop: "20px",
-              }}
-            >
               <View
                 style={{
                   display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: "space-around",
+                  flexDirection: "row",
+                  marginTop: "20px",
                 }}
               >
-                <Text>______________</Text>
-                <Text> Usuario</Text>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text>_____________________________</Text>
-                <Text> Personal Inventariador</Text>
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>______________</Text>
+                  <Text> Usuario</Text>
+                </View>
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>_____________________________</Text>
+                  <Text> Personal Inventariador</Text>
+                </View>
               </View>
             </View>
           </View>

@@ -138,7 +138,7 @@ const MenuConfiguracion = ({ setTitle }) => {
           <strong>Ubicaciones</strong>
         </p>
       </section>
-      <section
+      {/* <section
         style={{ height: "250px", cursor: "pointer" }}
         onClick={() => navigate("/configuracion/migrar")}
       >
@@ -160,7 +160,7 @@ const MenuConfiguracion = ({ setTitle }) => {
           {" "}
           <strong>Cambiar bienes de trabajador</strong>
         </p>
-      </section>
+      </section> */}
     </div>
   );
 };
