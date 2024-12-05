@@ -6,8 +6,8 @@ import Grafico from "./Grafico";
 // const socket = io("http://localhost:3006"); // Conectar a Socket.IO
 
 const Reportes = ({ setTitle }) => {
-  const [bienes, setBienes] = useState([]); 
-  const [actualizacion, setActualizacion] = useState(null); 
+  const [bienes, setBienes] = useState([]);
+  const [actualizacion, setActualizacion] = useState(null);
   const [estadisticas, setEstadisticas] = useState({});
   const socketRef = useRef(null);
   useEffect(() => {
@@ -28,7 +28,7 @@ const Reportes = ({ setTitle }) => {
   // useEffect(() => {
   //   // Create socket connection
   //   const SOCKET_URL = process.env.REACT_APP_BASE || 'http://localhost:3006';
-    
+
   //   if (!socketRef.current) {
   //     // Initialize socket with proper configuration
   //     socketRef.current = io(SOCKET_URL, {
@@ -152,20 +152,19 @@ const Reportes = ({ setTitle }) => {
               </Card>
             </Col>
             <Col span={12}>
-            <Card bordered={false}>
+              <Card bordered={false}>
                 <Statistic
                   title="Faltantes"
                   value={estadisticas?.contador?.faltan}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
-
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-            <Card bordered={false}>
+              <Card bordered={false}>
                 <Statistic
                   title="Inventariados"
                   value={estadisticas?.contador?.inventariados}
@@ -175,14 +174,13 @@ const Reportes = ({ setTitle }) => {
 
             </Col>
             <Col span={12}>
-            <Card bordered={false}>
+              <Card bordered={false}>
                 <Statistic
                   title="Activos"
                   value={estadisticas?.contador?.activos}
                   valueStyle={{ color: "#3f8600" }}
                 />
               </Card>
-
             </Col>
           </Row>
           <Row gutter={16}>
