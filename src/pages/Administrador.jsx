@@ -59,7 +59,7 @@ const Administrador = () => {
 
   return (
     <Layout>
-      {!localStorage.getItem("token") ? (
+      {!localStorage.getItem("token") || !localStorage.getItem("permisos") ? (
         <Login setIsLogged={setIsLogged} />
       ) : (
         <>
