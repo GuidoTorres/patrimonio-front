@@ -184,7 +184,7 @@ const CargoPDF = ({ registros }) => {
                 <View style={{ flex: 4, alignItems: "center" }}>
                   <Text style={{ fontSize: "12px" }}>TARJETA DE CARGO</Text>
                   <Text style={{ fontSize: "11px", marginTop: "5px" }}>
-                    {"EJERCICIO" + " " + dayjs().format("YYYY")}
+                    {"EJERCICIO" + " " + 2024}
                   </Text>
                 </View>
               </View>
@@ -439,7 +439,7 @@ const CargoPDF = ({ registros }) => {
               FICHA DE LEVANTAMIENTO DE INFORMACIÓN
             </Text>
             <Text style={{ fontSize: 14, textAlign: "center" }}>
-              INVENTARIO PATRIMONIAL {dayjs().format("YYYY")}
+              INVENTARIO PATRIMONIAL {2024}
             </Text>
           </View>
 
