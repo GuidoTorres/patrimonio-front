@@ -25,5 +25,5 @@ export const ProtectedRoute = ({ children }) => {
   //   return <div>Cargando...</div>; // Mostrar un indicador de carga mientras se verifica el token
   // }
 
-  return !localStorage.getItem("token") ? <Navigate to="/" replace /> : children;
+  return !localStorage.getItem("token")|| !localStorage.getItem("permisos")  ? <Navigate to="/" replace /> : children;
 };
